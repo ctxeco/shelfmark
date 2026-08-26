@@ -7,11 +7,19 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "require": "./dist/index.cjs" } },
-  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@shelfmark/core": "workspace:*",
@@ -21,7 +29,13 @@
     "jose": "^5.10.0",
     "mongodb": "^7.4.0"
   },
-  "peerDependencies": { "fastify": "^5.0.0" },
-  "devDependencies": { "fastify": "^5.10.0" },
-  "engines": { "node": ">=20" }
+  "peerDependencies": {
+    "fastify": "^5.0.0"
+  },
+  "devDependencies": {
+    "fastify": "^5.10.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }

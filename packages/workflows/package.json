@@ -1,19 +1,30 @@
 {
   "name": "@shelfmark/workflows",
   "version": "0.0.0",
-  "description": "Temporal workflows and activities: consent-scoped drive map walk, selective ingest, delta sync — continueAsNew checkpointing, typed refusals, throttle-honoring retries",
+  "description": "Temporal workflows and activities: consent-scoped drive map walk, selective ingest, delta sync \u2014 continueAsNew checkpointing, typed refusals, throttle-honoring retries",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "require": "./dist/index.js", "default": "./dist/index.js" },
-    "./workflows": { "types": "./dist/workflows/index.d.ts", "require": "./dist/workflows/index.js", "default": "./dist/workflows/index.js" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./workflows": {
+      "types": "./dist/workflows/index.d.ts",
+      "require": "./dist/workflows/index.js",
+      "default": "./dist/workflows/index.js"
+    },
     "./workflows-source": "./src/workflows/index.ts"
   },
-  "files": ["dist", "src/workflows"],
+  "files": [
+    "dist",
+    "src/workflows"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@shelfmark/core": "workspace:*",
@@ -28,5 +39,7 @@
     "@temporalio/testing": "^1.11.0",
     "@temporalio/worker": "^1.11.0"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

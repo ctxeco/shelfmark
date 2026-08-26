@@ -1,0 +1,112 @@
+{"fixture": "classifier-equivalence", "version": "1.0.0", "created": "2026-08-20", "authored_from": "graph/observed/artifact-classes.v1.json 1.0.0-rc2 NORMATIVE TEXT (rules.precedence, the per-class example_extensions tables, machine_generated_names + notes 1-3, prune_segments, the rc2_additions notes, residual_unclassified_findings) — expectations hand-authored from the artifact BEFORE running eval/artifact_classifier.py, per 25B §2.3; a fixture generated from the code it tests is vacuous. Equivalence is on (class, rule) PAIRS. Rule strings follow the reference attribution grammar: prune_ancestor:<seg> | prune_self:<name> | is_folder | machine_name:<name> | extension:<ext> | name:<name> | no_rule_matched, all lowercased. Both suites MUST skip this leading metadata record (it carries a 'fixture' key and no 'name'). Verified 2026-08-20: eval/artifact_classifier.py agrees with every hand-authored expectation, 111/111 — zero divergences to adjudicate.", "resolution_notes": ["AMBIGUITY RESOLVED (attribution only, class unambiguous): rule 1 says 'any ancestor path segment matches' and does not name WHICH segment is attributed when several match. Resolved to the SHALLOWEST (leftmost) matching segment, agreeing with the reference implementation's left-to-right scan and the artifact's required run output 'the SEGMENT that fired'. Pinned by the app.py case under code/engram/.venv/lib/site-packages/requests -> prune_ancestor:.venv, not prune_ancestor:site-packages. A port that scans deepest-first fails that case.", "DOCUMENTED LIMIT PRESERVED AS WRITTEN (selection-policy amendment precedent, 2026-08-19): the compound probe reads only the tail after the FIRST dot, so vendor.bundle.min.js lands human_source via extension:js — the same mechanics the artifact itself states for a.b.tar.gz ('still lands here via its tail'). js is listed in human_source, so the deeply-dotted minified bundle reads as source. If that is ever judged wrong it is an ARTIFACT revision plus a fixture repin, never a silent evaluator fix.", "DERIVED AND CONFIRMED: prune rules 1-2 are folder/ancestor-scoped, so a FILE named exactly like a prune segment is never pruned — file 'coverage' escapes (no_rule_matched), and file 'env' lands human_source via rule 4's name: fallback because 'env' is in the human_source extension table. The trailing path segment equal to the item's own name is the item itself, NOT an ancestor.", "Rule-attribution strings are lowercased even when the observed name is not (PKG-INFO -> machine_name:pkg-info, Pods -> prune_self:pods, LICENSE -> name:license), matching the reference implementation's case-insensitive matching."]}
+{"name": "engram", "is_folder": true, "path": "code/engram", "expected_class": "container", "expected_rule": "is_folder"}
+{"name": "legal", "is_folder": true, "path": "Documents/legal", "expected_class": "container", "expected_rule": "is_folder"}
+{"name": "node_modules", "is_folder": true, "path": "code/engram/node_modules", "expected_class": "machine_generated", "expected_rule": "prune_self:node_modules"}
+{"name": ".git", "is_folder": true, "path": "code/engram/.git", "expected_class": "machine_generated", "expected_rule": "prune_self:.git"}
+{"name": "__pycache__", "is_folder": true, "path": "code/engram/src/__pycache__", "expected_class": "machine_generated", "expected_rule": "prune_self:__pycache__"}
+{"name": "venv", "is_folder": true, "path": "code/openContextGraph/venv", "expected_class": "machine_generated", "expected_rule": "prune_self:venv"}
+{"name": "Pods", "is_folder": true, "path": "code/MyApp/Pods", "expected_class": "machine_generated", "expected_rule": "prune_self:pods"}
+{"name": "DerivedData", "is_folder": true, "path": "code/MyApp/DerivedData", "expected_class": "machine_generated", "expected_rule": "prune_self:deriveddata"}
+{"name": "dist", "is_folder": true, "path": "code/engram/dist", "expected_class": "machine_generated", "expected_rule": "prune_self:dist"}
+{"name": "backup.zip", "is_folder": true, "path": "Documents/personalDownloads/backup.zip", "expected_class": "container", "expected_rule": "is_folder"}
+{"name": "lodash", "is_folder": true, "path": "code/engram/node_modules/lodash", "expected_class": "machine_generated", "expected_rule": "prune_ancestor:node_modules"}
+{"name": "Engram_Context_Engineering_GTM_Research_Paper_v2.fld", "is_folder": true, "path": "Documents/personalDownloads/Engram_Context_Engineering_GTM_Research_Paper_v2.fld", "expected_class": "container", "expected_rule": "is_folder"}
+{"name": "README.md", "is_folder": false, "path": "code/engram/node_modules/lodash/README.md", "expected_class": "machine_generated", "expected_rule": "prune_ancestor:node_modules"}
+{"name": "lodash-4.17.21.tgz", "is_folder": false, "path": "code/engram/node_modules/.cache/lodash-4.17.21.tgz", "expected_class": "machine_generated", "expected_rule": "prune_ancestor:node_modules"}
+{"name": "index.d.ts", "is_folder": false, "path": "code/engram/node_modules/@types/node/index.d.ts", "expected_class": "machine_generated", "expected_rule": "prune_ancestor:node_modules"}
+{"name": "report.pdf", "is_folder": false, "path": "code/engram/dist/report.pdf", "expected_class": "machine_generated", "expected_rule": "prune_ancestor:dist"}
+{"name": "config.json", "is_folder": false, "path": "code/proj/env/config.json", "expected_class": "machine_generated", "expected_rule": "prune_ancestor:env"}
+{"name": "README.md", "is_folder": false, "path": "code/MyApp/Pods/Alamofire/README.md", "expected_class": "machine_generated", "expected_rule": "prune_ancestor:pods"}
+{"name": "Makefile", "is_folder": false, "path": "code/tools/build/Makefile", "expected_class": "machine_generated", "expected_rule": "prune_ancestor:build"}
+{"name": "app.py", "is_folder": false, "path": "code/engram/.venv/lib/site-packages/requests/app.py", "expected_class": "machine_generated", "expected_rule": "prune_ancestor:.venv"}
+{"name": "coverage", "is_folder": false, "path": "code/tools/coverage", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "env", "is_folder": false, "path": "code/engram/env", "expected_class": "human_source", "expected_rule": "name:env"}
+{"name": "package-lock.json", "is_folder": false, "path": "code/engram/package-lock.json", "expected_class": "machine_generated", "expected_rule": "machine_name:package-lock.json"}
+{"name": "config.json", "is_folder": false, "path": "code/engram/config.json", "expected_class": "human_source", "expected_rule": "extension:json"}
+{"name": "yarn.lock", "is_folder": false, "path": "code/frontend/yarn.lock", "expected_class": "machine_generated", "expected_rule": "machine_name:yarn.lock"}
+{"name": "Gemfile.lock", "is_folder": false, "path": "code/blog/Gemfile.lock", "expected_class": "machine_generated", "expected_rule": "machine_name:gemfile.lock"}
+{"name": "Gemfile", "is_folder": false, "path": "code/blog/Gemfile", "expected_class": "human_source", "expected_rule": "name:gemfile"}
+{"name": "top_level.txt", "is_folder": false, "path": "code/engram/engram.egg-info/top_level.txt", "expected_class": "machine_generated", "expected_rule": "machine_name:top_level.txt"}
+{"name": "dependency_links.txt", "is_folder": false, "path": "code/engram/engram.egg-info/dependency_links.txt", "expected_class": "machine_generated", "expected_rule": "machine_name:dependency_links.txt"}
+{"name": "PKG-INFO", "is_folder": false, "path": "code/engram/engram.egg-info/PKG-INFO", "expected_class": "machine_generated", "expected_rule": "machine_name:pkg-info"}
+{"name": "notes.txt", "is_folder": false, "path": "Documents/notes.txt", "expected_class": "human_prose", "expected_rule": "extension:txt"}
+{"name": ".DS_Store", "is_folder": false, "path": "Documents/.DS_Store", "expected_class": "machine_generated", "expected_rule": "machine_name:.ds_store"}
+{"name": "Thumbs.db", "is_folder": false, "path": "Pictures/Thumbs.db", "expected_class": "machine_generated", "expected_rule": "machine_name:thumbs.db"}
+{"name": "desktop.ini", "is_folder": false, "path": "Documents/desktop.ini", "expected_class": "machine_generated", "expected_rule": "machine_name:desktop.ini"}
+{"name": ".signature.p7s", "is_folder": false, "path": "Documents/WindowsPowerShell/Modules/Az.Accounts/4.0.2/.signature.p7s", "expected_class": "machine_generated", "expected_rule": "machine_name:.signature.p7s"}
+{"name": "contract.p7s", "is_folder": false, "path": "Documents/legal/contract.p7s", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "go.sum", "is_folder": false, "path": "code/gosvc/go.sum", "expected_class": "machine_generated", "expected_rule": "machine_name:go.sum"}
+{"name": "poetry.lock", "is_folder": false, "path": "code/rag/poetry.lock", "expected_class": "machine_generated", "expected_rule": "machine_name:poetry.lock"}
+{"name": "not-zip-safe", "is_folder": false, "path": "code/engram/engram.egg-info/not-zip-safe", "expected_class": "machine_generated", "expected_rule": "machine_name:not-zip-safe"}
+{"name": "app.min.js", "is_folder": false, "path": "code/engram/frontend/static/app.min.js", "expected_class": "machine_generated", "expected_rule": "extension:min.js"}
+{"name": "app.js", "is_folder": false, "path": "code/engram/frontend/src/app.js", "expected_class": "human_source", "expected_rule": "extension:js"}
+{"name": "app.js.map", "is_folder": false, "path": "code/engram/frontend/static/app.js.map", "expected_class": "machine_generated", "expected_rule": "extension:map"}
+{"name": "vendor.bundle.min.js", "is_folder": false, "path": "code/engram/frontend/static/vendor.bundle.min.js", "expected_class": "human_source", "expected_rule": "extension:js"}
+{"name": "backup.tar.gz", "is_folder": false, "path": "Documents/backup.tar.gz", "expected_class": "opaque_container", "expected_rule": "extension:tar.gz"}
+{"name": "db.2026-08-19.tar.gz", "is_folder": false, "path": "Documents/db.2026-08-19.tar.gz", "expected_class": "opaque_container", "expected_rule": "extension:gz"}
+{"name": "release.tar.bz2", "is_folder": false, "path": "Documents/personalDownloads/release.tar.bz2", "expected_class": "opaque_container", "expected_rule": "extension:tar.bz2"}
+{"name": "bank statements.zip", "is_folder": false, "path": "Documents/personalDownloads/bank statements.zip", "expected_class": "opaque_container", "expected_rule": "extension:zip"}
+{"name": "googlechrome.dmg", "is_folder": false, "path": "Documents/personalDownloads/googlechrome.dmg", "expected_class": "opaque_container", "expected_rule": "extension:dmg"}
+{"name": "rt-client-0.5.3.tgz", "is_folder": false, "path": "code/openContextGraph/frontend/rt-client-0.5.3.tgz", "expected_class": "opaque_container", "expected_rule": "extension:tgz"}
+{"name": "Assessment Handbook - Packaged.onepkg", "is_folder": false, "path": "Documents/Misc/Azure Solution Assessment/Assessment Handbook/Assessment Handbook - Packaged.onepkg", "expected_class": "opaque_container", "expected_rule": "extension:onepkg"}
+{"name": "archive.7z", "is_folder": false, "path": "Documents/personalDownloads/archive.7z", "expected_class": "opaque_container", "expected_rule": "extension:7z"}
+{"name": "ubuntu-24.04.2-live-server-amd64.iso", "is_folder": false, "path": "Documents/personalDownloads/ubuntu-24.04.2-live-server-amd64.iso", "expected_class": "opaque_container", "expected_rule": "extension:iso"}
+{"name": "sources.tar", "is_folder": false, "path": "Documents/personalDownloads/sources.tar", "expected_class": "opaque_container", "expected_rule": "extension:tar"}
+{"name": "somelib-1.2.3.whl", "is_folder": false, "path": "code/engram/somelib-1.2.3.whl", "expected_class": "machine_generated", "expected_rule": "extension:whl"}
+{"name": "gradle-wrapper.jar", "is_folder": false, "path": "code/app/gradle/wrapper/gradle-wrapper.jar", "expected_class": "machine_generated", "expected_rule": "extension:jar"}
+{"name": "newtonsoft.json.13.0.3.nupkg", "is_folder": false, "path": "Documents/nuget-local/newtonsoft.json.13.0.3.nupkg", "expected_class": "machine_generated", "expected_rule": "extension:nupkg"}
+{"name": "sample-1.0-py3.12.egg", "is_folder": false, "path": "code/engram/sample-1.0-py3.12.egg", "expected_class": "machine_generated", "expected_rule": "extension:egg"}
+{"name": "IMG_4821.HEIC", "is_folder": false, "path": "Pictures/IMG_4821.HEIC", "expected_class": "media", "expected_rule": "extension:heic"}
+{"name": "IOE0934375063-3025215304570-part7.tif", "is_folder": false, "path": "Documents/personalDownloads/IOE0934375063-3025215304570-part7.tif", "expected_class": "media", "expected_rule": "extension:tif"}
+{"name": "scan.tiff", "is_folder": false, "path": "Documents/scan.tiff", "expected_class": "media", "expected_rule": "extension:tiff"}
+{"name": "favicon.ico", "is_folder": false, "path": "code/engram/docs/assets/favicon.ico", "expected_class": "media", "expected_rule": "extension:ico"}
+{"name": "demo.mp4", "is_folder": false, "path": "Documents/Misc/demo.mp4", "expected_class": "media", "expected_rule": "extension:mp4"}
+{"name": "logo.svg", "is_folder": false, "path": "code/engram/docs/assets/logo.svg", "expected_class": "media", "expected_rule": "extension:svg"}
+{"name": "does this equate to constructive evictionThere was.docx", "is_folder": false, "path": "does this equate to constructive evictionThere was.docx", "expected_class": "human_prose", "expected_rule": "extension:docx"}
+{"name": "Cognitive_Enterprise_Architecture_Blueprint.pdf", "is_folder": false, "path": "Documents/Documents/personalDownloads/Cognitive_Enterprise_Architecture_Blueprint.pdf", "expected_class": "human_prose", "expected_rule": "extension:pdf"}
+{"name": "NICO-Security-Assessment Data-v2 1.xlsx", "is_folder": false, "path": "Documents/code/NICO_Migration/60_Assets/NICO-Security-Assessment Data-v2 1.xlsx", "expected_class": "human_prose", "expected_rule": "extension:xlsx"}
+{"name": "README.md", "is_folder": false, "path": "code/engram/README.md", "expected_class": "human_prose", "expected_rule": "extension:md"}
+{"name": "Meeting Notes.one", "is_folder": false, "path": "Documents/Misc/Meeting Notes.one", "expected_class": "human_prose", "expected_rule": "extension:one"}
+{"name": "contacts-export.csv", "is_folder": false, "path": "Documents/Misc/contacts-export.csv", "expected_class": "human_prose", "expected_rule": "extension:csv"}
+{"name": "network-diagram.vsdx", "is_folder": false, "path": "Documents/Misc/network-diagram.vsdx", "expected_class": "human_prose", "expected_rule": "extension:vsdx"}
+{"name": "LICENSE", "is_folder": false, "path": "code/engram/LICENSE", "expected_class": "human_prose", "expected_rule": "name:license"}
+{"name": "RE outstanding invoice.msg", "is_folder": false, "path": "Documents/Misc/RE outstanding invoice.msg", "expected_class": "human_prose", "expected_rule": "extension:msg"}
+{"name": "graph.py", "is_folder": false, "path": "code/engram/src/graph.py", "expected_class": "human_source", "expected_rule": "extension:py"}
+{"name": "engram.code-workspace", "is_folder": false, "path": "code/engram.code-workspace", "expected_class": "human_source", "expected_rule": "extension:code-workspace"}
+{"name": "main.bicep", "is_folder": false, "path": "code/acme.workspace/ctxEco/infra/main.bicep", "expected_class": "human_source", "expected_rule": "extension:bicep"}
+{"name": "tenants.rego", "is_folder": false, "path": "code/acme-policies-opa/policies/tenants.rego", "expected_class": "human_source", "expected_rule": "extension:rego"}
+{"name": ".gitignore", "is_folder": false, "path": "code/engram/.gitignore", "expected_class": "human_source", "expected_rule": "extension:gitignore"}
+{"name": ".cursorrules", "is_folder": false, "path": "code/engram/.cursorrules", "expected_class": "human_source", "expected_rule": "extension:cursorrules"}
+{"name": ".nvmrc", "is_folder": false, "path": "code/engram/frontend/.nvmrc", "expected_class": "human_source", "expected_rule": "extension:nvmrc"}
+{"name": ".env", "is_folder": false, "path": "code/engram/.env", "expected_class": "human_source", "expected_rule": "extension:env"}
+{"name": "Dockerfile", "is_folder": false, "path": "code/engram/Dockerfile", "expected_class": "human_source", "expected_rule": "name:dockerfile"}
+{"name": "Makefile", "is_folder": false, "path": "code/engram/Makefile", "expected_class": "human_source", "expected_rule": "name:makefile"}
+{"name": "CODEOWNERS", "is_folder": false, "path": "code/engram/.github/CODEOWNERS", "expected_class": "human_source", "expected_rule": "name:codeowners"}
+{"name": "CNAME", "is_folder": false, "path": "code/CogAI/docs/CNAME", "expected_class": "human_source", "expected_rule": "name:cname"}
+{"name": "deploy.sh", "is_folder": false, "path": "code/engram/scripts/deploy.sh", "expected_class": "human_source", "expected_rule": "extension:sh"}
+{"name": "Install-Module.ps1", "is_folder": false, "path": "Documents/WindowsPowerShell/Install-Module.ps1", "expected_class": "human_source", "expected_rule": "extension:ps1"}
+{"name": "analysis.ipynb", "is_folder": false, "path": "code/engram/notebooks/analysis.ipynb", "expected_class": "human_source", "expected_rule": "extension:ipynb"}
+{"name": "values.yaml", "is_folder": false, "path": "code/acme-infra-gitops/litellm/values.yaml", "expected_class": "human_source", "expected_rule": "extension:yaml"}
+{"name": "main.tf", "is_folder": false, "path": "code/infra/main.tf", "expected_class": "human_source", "expected_rule": "extension:tf"}
+{"name": "Microsoft.SharePoint.Client.dll", "is_folder": false, "path": "Documents/Microsoft.SharePoint.Client.dll", "expected_class": "machine_generated", "expected_rule": "extension:dll"}
+{"name": "backend.log", "is_folder": false, "path": "code/acme.workspace/backend.log", "expected_class": "machine_generated", "expected_rule": "extension:log"}
+{"name": "utils.cpython-312.pyc", "is_folder": false, "path": "code/engram/src/utils.cpython-312.pyc", "expected_class": "machine_generated", "expected_rule": "extension:pyc"}
+{"name": "firmware.bin", "is_folder": false, "path": "Documents/personalDownloads/firmware.bin", "expected_class": "machine_generated", "expected_rule": "extension:bin"}
+{"name": "custom.lock", "is_folder": false, "path": "code/app/custom.lock", "expected_class": "machine_generated", "expected_rule": "extension:lock"}
+{"name": "Noto-Sans-700.ttf", "is_folder": false, "path": "code/CogAI/docs/assets/fonts/Noto-Sans-700/Noto-Sans-700.ttf", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "Noto-Sans-regular.woff2", "is_folder": false, "path": "code/engram/docs/assets/fonts/Noto-Sans-regular/Noto-Sans-regular.woff2", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "Az.Accounts.psd1", "is_folder": false, "path": "Documents/WindowsPowerShell/Modules/Az.Accounts/4.0.2/Az.Accounts.psd1", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "Accounts.format.ps1xml", "is_folder": false, "path": "Documents/WindowsPowerShell/Modules/Az.Accounts/4.0.2/Accounts.format.ps1xml", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "Dana @ Microsoft.url", "is_folder": false, "path": "Documents/Misc/Dana @ Microsoft.url", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "Zoom.lnk", "is_folder": false, "path": "Documents/Misc/Zoom.lnk", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "btc.rdp", "is_folder": false, "path": "Documents/personalDownloads/btc.rdp", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": ".env.example", "is_folder": false, "path": "code/engram/frontend/.env.example", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": ".env.local", "is_folder": false, "path": "code/engram/.env.local", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "Dockerfile.worker", "is_folder": false, "path": "code/acme.workspace/documentIngestionRouter/backend/Dockerfile.worker", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": ".gitkeep", "is_folder": false, "path": "code/engram/.dev/test-suites/.gitkeep", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": ".nojekyll", "is_folder": false, "path": "code/CogAI/.nojekyll", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "themedata.thmx", "is_folder": false, "path": "Documents/personalDownloads/Engram_Context_Engineering_GTM_Research_Paper_v2.fld/themedata.thmx", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "preferences.edge", "is_folder": false, "path": "Apps/Microsoft Edge/Edge Workspaces/preferences.edge", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "images", "is_folder": false, "path": "code/acme.workspace/ctxEco/docs/images", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "engram virtual context store architecture", "is_folder": false, "path": "Documents/Misc/engram virtual context store architecture", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}
+{"name": "thing.qqzz", "is_folder": false, "path": "Documents/thing.qqzz", "expected_class": "unclassified", "expected_rule": "no_rule_matched"}

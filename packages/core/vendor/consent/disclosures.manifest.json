@@ -1,0 +1,53 @@
+{
+  "artifact": "ctxeco-consent-disclosures",
+  "version": "1",
+  "frozen_at": "2026-08-13",
+  "purpose": "THE canonical body of consent disclosure text for Plan 25 Phase C. One set of bytes, hashed here, vendored verbatim into every consumer. The consent record stores the verbatim text plus this sha256 and the locale — never an i18n key. Two independent bodies of this copy existed before 2026-08-13 (the API service's consentDisclosures.ts and the portal's src/consent/disclosures/*.md); they disagreed on ids, locales and on what revocation does, which made a Spanish speaker unable to consent at all and made the portal's bytes fail the API's grant with 409 disclosure_text_mismatch. This artifact exists so that cannot recur.",
+  "scopes": [
+    "map_metadata",
+    "ingest_content"
+  ],
+  "locales": [
+    "en",
+    "es-MX"
+  ],
+  "current": {
+    "map_metadata": "map_metadata.v1",
+    "ingest_content": "ingest_content.v1"
+  },
+  "governance": "Text is NEVER edited in place. Correcting a word means a NEW disclosureId (map_metadata.v2, ...) in a NEW file, leaving the old entry and its file intact so every already-stored consent record still resolves to the words its subject read. Only the disclosureIds named in `current` may be offered for a new consent.",
+  "disclosures": [
+    {
+      "disclosureId": "map_metadata.v1",
+      "scope": "map_metadata",
+      "locale": "en",
+      "file": "disclosures/map_metadata.v1.en.md",
+      "sha256": "1a889e2d3b4f416d0b014e3490bded9554257ff8c6f457c917ee325920fa270b",
+      "bytes": 6158
+    },
+    {
+      "disclosureId": "map_metadata.v1",
+      "scope": "map_metadata",
+      "locale": "es-MX",
+      "file": "disclosures/map_metadata.v1.es-MX.md",
+      "sha256": "5a4dfbef8fb394c0989d96152676d50b45dba1c068a9d57ba74aaa5fe02c3494",
+      "bytes": 6750
+    },
+    {
+      "disclosureId": "ingest_content.v1",
+      "scope": "ingest_content",
+      "locale": "en",
+      "file": "disclosures/ingest_content.v1.en.md",
+      "sha256": "645b8d6e018cd2a9923f4b5734cd803d8e33007eaf94bf8be9eb5815f1789643",
+      "bytes": 4790
+    },
+    {
+      "disclosureId": "ingest_content.v1",
+      "scope": "ingest_content",
+      "locale": "es-MX",
+      "file": "disclosures/ingest_content.v1.es-MX.md",
+      "sha256": "4ec3f6a7a36e0a89c5a18b5e6cb9aac19bc11ee77644a54b5d17491fea484240",
+      "bytes": 5213
+    }
+  ]
+}

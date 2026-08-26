@@ -1,0 +1,351 @@
+{
+  "artifact": "artifact-classes",
+  "version": "1.0.0-rc2",
+  "status": "release-candidate",
+  "created": "2026-08-14",
+  "revised": "2026-08-19",
+
+  "revision_note_rc2": "AC-5 CLOSED. rc1 shipped six classes and an escape hatch that swallowed 21.43% of the drive by bytes; rc2 adds `opaque_container`, assigns the extensions that genuinely belong to it, assigns a few that belong to existing classes on their merits, and RE-MEASURES against the same walk. THE VERSION MOVED BECAUSE THE RULES MOVED — a per-item class stamped `1.0.0-rc1` has to mean the rc1 rule set produced it, and re-running rc2's rules under rc1's stamp is the same defect class this repo already wrote up when an artifact was allowed to write its own version string. rc2 is NOT 1.0.0: AC-1, AC-3 and AC-4 are still open, and a release candidate that promotes itself on one closed gate is how a gate list becomes decorative.",
+
+  "revision_note_rc2_no_re_enumeration": "rc1's AC-5 entry predicted that re-classification needs NO re-enumeration, and that prediction is what rc2 tested. It held: every number in `measurement_AC5_reclassification` comes from re-running the classifier over the byte-identical 2026-08-14 walk file (sha256 recorded there). NOTHING WAS RE-WALKED. The corollary is a constraint, not a convenience — `prune_segments` is UNCHANGED in rc2 and had to be, because pruning happens DURING enumeration: adding a segment would reclassify already-walked items as machine_generated while leaving them out of the pruned-subtree byte bucket, and AC-2's exact reconciliation would silently stop reconciling. A prune-list change is a re-walk. An extension-table change is not. See `residual_unclassified_findings.installed_powershell_modules`, which is exactly the change rc2 therefore refused to make.",
+
+  "owner_directive": "complete and comprehensive overhaul, sorting through what is human readable and separating all code and agent readable files and folders under some kind of agentic structure, we need to be able to separate human from agentic data ... in the most economical approach possible (owner, 2026-08-14)",
+
+  "purpose": "Decide, for one drive item, WHAT KIND OF ARTIFACT it is — from observed metadata alone, at zero inference cost. This is the primary sort the knowledge-organisation product is built on: you cannot organise knowledge until you can say which bytes are knowledge.",
+
+  "why_this_is_derived_and_not_inferred": [
+    "Plan 25's observed graph admits `observed` (a named provider field says so) and `derived` (computed by a STATED DETERMINISTIC RULE from observed data). It admits nothing `inferred`.",
+    "Every rule here reads only: the item's name, its extension, its ancestor path segments, its Graph `folder`/`file` facet, and its size. All are observed fields on driveItem. Given the same inputs the class is the same every time, and the rule that fired is nameable.",
+    "That is what makes this cheap AND admissible. A model asked 'is this file important?' is inferring; a rule asking 'is any ancestor segment named node_modules?' is deriving. The first belongs in Plan 23's prose graph where the uncertainty machinery lives. The second belongs here."
+  ],
+
+  "the_economy_argument": {
+    "claim": "The classification is decidable at the FOLDER BOUNDARY for the overwhelming majority of bytes, so the enumerator never walks inside them.",
+    "measured_on": "the author's personal OneDrive, 2026-08-14, metadata only",
+
+    "SUPERSEDED_folder_level_estimate": {
+      "machine_generated_share": "98.01%",
+      "human_document_share": "0.122%",
+      "junk_to_signal_byte_ratio": 806,
+      "why_it_was_wrong": "Estimated from ROOT FOLDER SIZES before any per-item walk: it assumed code/ (13.07 GB) was substantially all machine output. AC-2's full enumeration says otherwise. Kept visible rather than deleted, because a superseded number that quietly disappears is indistinguishable from one that was never wrong, and this one was quoted in a commit message and a roadmap doc before it was measured.",
+      "error": "HIGH by 32.4 percentage points"
+    },
+
+    "measurement_AC2_full_enumeration": {
+      "run": "2026-08-14, eval/drive_inventory.py --provider microsoft, artifact-classes 1.0.0-rc1",
+      "total_bytes": 16819007159,
+      "items_enumerated": 15657,
+      "folders_enumerated": 7469,
+      "files_enumerated": 8188,
+      "subtrees_pruned": 346,
+      "reconciliation": "enumerated files 5.60 GB + pruned subtrees 10.07 GB = 15.66 GB = drive root total, EXACTLY. Zero overlap, zero nested prunes. Byte math excludes containers, whose Graph sizes are recursive and double-count.",
+      "by_bytes": {
+        "pruned_subtrees": "64.3%",
+        "unclassified": "21.4%",
+        "media": "9.9%",
+        "human_source": "2.2%",
+        "machine_generated_files": "1.3%",
+        "human_prose": "1.0%"
+      },
+      "machine_output_total": "65.6% (pruned + machine_generated files)",
+      "knowledge_total": "3.13% of BYTES — but 80.6% of FILES (6,596 of 8,188)",
+      "SUPERSEDED_knowledge_file_count": {
+        "value": "6,596 files / 80.6%",
+        "why_it_moved": "Not an error at the time — a rules change afterwards. The 6,596 is the count as LABELLED DURING THE WALK, before `machine_generated_names_note_2` added the setuptools egg-info exact names to this artifact. Under the rc1 rules AS FROZEN, 48 of those .txt files are machine_generated and the count is 6,548 / 79.97%. Under rc2 it is 6,672 / 81.49% (rc2 adds 119 human_source + 5 human_prose). Marked rather than overwritten because a number that silently tracks the latest rules is a number nobody can reproduce; the three values are three different rule sets over one identical walk, and each is correct under its own.",
+        "measured": "2026-08-19, AC-5 re-classification, same walk file"
+      }
+    },
+
+    "measurement_AC5_reclassification": {
+      "run": "2026-08-19, eval/artifact_classifier.py re-run over the SAME walk, artifact-classes 1.0.0-rc2. NO RE-ENUMERATION — see revision_note_rc2_no_re_enumeration.",
+      "input_walk": {
+        "file": "~/onedrive-full.jsonl",
+        "sha256": "1cd1fbf0b18dfdce02397316c9eac9b6c08f64bc248cee09e843ac998eea61fa",
+        "bytes_on_disk": 7440452,
+        "lines": 15657,
+        "provenance": "the 2026-08-14 AC-2 full enumeration, byte-identical. Every number below is a pure function of this file plus the rule tables above; nothing in rc2 touched a drive."
+      },
+      "denominator": {
+        "value": 16819268398,
+        "how_derived": "enumerated file bytes 6,008,787,031 + pruned-subtree folder bytes 10,810,481,367. Walked containers are EXCLUDED, because Graph folder sizes are recursive and would double-count.",
+        "delta_against_AC2_recorded_total_bytes": "AC-2 recorded total_bytes 16,819,007,159; this sum is 16,819,268,398, which is 261,239 bytes HIGHER (0.0016%). Recorded, not reconciled — it does not move any percentage below at three decimal places, and chasing it is AC-2's business, not AC-5's. Stating it beats letting a reader discover two totals in one file and trust neither."
+      },
+      "three_label_sets_over_one_walk": "The walk file carries its own `artifact_class` field, written during the 2026-08-14 run. It does NOT equal the rc1 rules as frozen, because note_2's exact names were added to the artifact after the walk: 48 egg-info .txt files moved human_prose -> machine_generated and 12 PKG-INFO files moved unclassified -> machine_generated, exactly 60 items, reconciled item-by-item. The BEFORE column below is the rc1 rules as frozen, re-run today — not the stored field — because comparing rc2 against a label set no current rule produces would attribute those 60 items to rc2.",
+
+      "before_rc1_rules_re_run": {
+        "pruned_subtrees": {"folders": 346, "bytes": 10810481367, "pct": "64.274%"},
+        "unclassified":    {"files": 717, "bytes": 3604502727, "pct": "21.431%", "MB": 3437.52, "extension_buckets": 37},
+        "media":           {"files": 403, "bytes": 1659827490, "pct": "9.869%"},
+        "human_source":    {"files": 4570, "bytes": 362610052, "pct": "2.156%"},
+        "machine_generated": {"files": 520, "bytes": 217956707, "pct": "1.296%"},
+        "human_prose":     {"files": 1978, "bytes": 163890055, "pct": "0.974%"}
+      },
+
+      "after_rc2": {
+        "pruned_subtrees": {"folders": 346, "bytes": 10810481367, "pct": "64.274%", "note": "UNCHANGED, and had to be — rc2 did not touch prune_segments"},
+        "opaque_container": {"files": 59, "bytes": 3347847543, "pct": "19.905%", "MB": 3192.76},
+        "media":           {"files": 408, "bytes": 1884599056, "pct": "11.205%"},
+        "human_source":    {"files": 4689, "bytes": 362947764, "pct": "2.158%"},
+        "machine_generated": {"files": 654, "bytes": 220244545, "pct": "1.309%"},
+        "human_prose":     {"files": 1983, "bytes": 163895413, "pct": "0.974%"},
+        "unclassified":    {"files": 395, "bytes": 29252710, "pct": "0.174%", "MB": 27.90, "extension_buckets": 21},
+        "files_total": 8188
+      },
+
+      "where_the_21_percent_went": {
+        "escaped_bytes_at_rc1": 3604502727,
+        "to_opaque_container": {"bytes": 3347847543, "share_of_escaped": "92.88%", "files": 59, "detail": "zip 47 files/1,344,082,159 B; dmg 9/2,000,302,581; tgz 2/617,178; onepkg 1/2,845,625"},
+        "to_media": {"bytes": 224771566, "share_of_escaped": "6.24%", "files": 5, "detail": "tif 3/224,745,462; ico 2/26,104"},
+        "to_machine_generated": {"bytes": 2287838, "share_of_escaped": "0.063%", "files": 134, "detail": ".signature.p7s 115/1,473,327 via the exact-name rule; log 19/814,511"},
+        "to_human_source": {"bytes": 337712, "share_of_escaped": "0.0094%", "files": 119, "detail": "bicep 53/293,491 B; gitignore 36/11,264; cname 8/182; cursorrules 4/14,893; gemfile 4/1,461; bicepparam 3/1,271; codeowners 3/5,400; funcignore 2/404; mdc 2/9,316; nvmrc 2/18; python_version 2/12"},
+        "to_human_prose": {"bytes": 5358, "share_of_escaped": "0.00015%", "files": 5, "detail": "license 5"},
+        "still_unclassified": {"bytes": 29252710, "share_of_escaped": "0.812%", "files": 395},
+        "arithmetic": "3,347,847,543 + 224,771,566 + 2,287,838 + 337,712 + 5,358 + 29,252,710 = 3,604,502,727 EXACTLY, and 59 + 5 + 134 + 119 + 5 + 395 = 717 files EXACTLY. Zero items unaccounted for."
+      },
+
+      "state_it_plainly": "Of the 21.43% of the drive the escape hatch was holding: 19.91 points are archives and now say so; 1.34 points were a missing three-letter alias for a format already in the table (tif/tiff); 0.02 points went to existing classes on their merits; and 0.17 points — 27.90 MB in 395 files — STILL ESCAPE and are meant to. Read by BYTES rc2 named 99.19% of what escaped. Read by FILES it named 44.9%. Both are true, the artifact's own rule says quote both, and the gap between them is the whole story: the bytes were four archive formats, the files are a long tail of things this artifact still has no class for.",
+
+      "unclassified_rate_before_and_after": {
+        "by_bytes": "21.431% -> 0.174%",
+        "by_files": "8.76% (717/8188) -> 4.82% (395/8188)",
+        "warning": "The by-bytes drop is 123x and the by-files drop is 1.8x. Anyone quoting only the first is describing four extensions, not a classifier."
+      }
+    },
+
+    "the_finding_that_actually_matters": "Knowledge is 3.13% of the bytes and 80.6% of the files. Documents are small and binaries are enormous, so a byte-share framing makes a drive look emptier of knowledge than it is, and a file-share framing makes it look fuller. Quote both or neither. The earlier '0.122% is documents' line was the byte view of a wrong estimate and read as 'there is almost nothing here', which is false: there are 6,596 knowledge files.",
+
+    "consequence": "The prune is still correct and still the margin — 64.3% of the drive by bytes was skipped at the folder boundary without being opened, and the walk touched 15,657 items instead of the whole tree. What was overstated was the magnitude, not the mechanism. NOTE the honest limit: we cannot state how many ITEMS were skipped, because not walking them is the point; the manifest reports bytes and subtrees, which is what we can actually observe."
+  },
+
+  "classes": [
+    {
+      "id": "human_prose",
+      "definition": "Authored for a person to read. The knowledge corpus proper.",
+      "example_extensions": ["docx", "doc", "pdf", "pptx", "ppt", "xlsx", "xls", "md", "txt", "rtf", "odt", "ods", "odp", "one", "onetoc2", "epub", "csv", "pages", "numbers", "key", "tex", "rst", "adoc", "org", "msg", "eml", "vsdx", "mpp", "license"],
+      "rc2_additions": {
+        "license": "MATCHED BY THE EXTENSIONLESS-NAME PATH (rule 4's `name:` fallback, the same one that names `dockerfile` and `makefile`), because a repository LICENSE file carries no extension. Five observed, 5,358 bytes. It is prose — authored for a person to read, and legally operative when read — even though it is almost always boilerplate somebody pasted. The class asks who it was written FOR, not whether it was written freshly."
+      },
+      "downstream": "eligible for Ingest (content read) after its own explicit consent record"
+    },
+    {
+      "id": "human_source",
+      "definition": "Written by a person, addressed to a machine. Meaningful and attributable, but not prose — a repo's source is knowledge about a system, not a document about a subject.",
+      "example_extensions": ["ts", "tsx", "js", "jsx", "mjs", "cjs", "py", "go", "rs", "java", "cs", "rb", "php", "swift", "kt", "scala", "clj", "ex", "exs", "pl", "lua", "r", "c", "cpp", "cc", "h", "hpp", "m", "mm", "vb", "fs", "sh", "bash", "zsh", "bat", "cmd", "ps1", "psm1", "sql", "rego", "tf", "tfvars", "yaml", "yml", "toml", "ini", "cfg", "conf", "properties", "env", "json", "jsonc", "json5", "xml", "html", "htm", "css", "scss", "less", "vue", "svelte", "ipynb", "dockerfile", "makefile", "proto", "graphql", "gradle", "code-workspace", "bicep", "bicepparam", "gitignore", "funcignore", "cursorrules", "mdc", "nvmrc", "python_version", "cname", "codeowners", "gemfile"],
+      "rc2_additions": {
+        "bicep, bicepparam": "56 observed files in the owner's own infra/ directories. Azure's IaC DSL is the same shape as `tf`/`tfvars`, which were already here; their absence was a table gap, not an epistemic one.",
+        "gitignore, funcignore, nvmrc, python_version, cursorrules, mdc": "Hand-written specifications addressed to a tool. `.cursorrules` and `.mdc` are the paradigm case of this class's own definition — written by a person, addressed to a machine — and they are the files the owner directive means by 'agentic data', so leaving them in the escape hatch left the directive's own subject matter unnamed. Matched via rule 4's extension tail; a leading-dot filename like `.gitignore` yields tail `gitignore`, which is why these read as extensions here even though they are whole names.",
+        "cname, codeowners, gemfile": "Extensionless whole names, matched by rule 4's `name:` fallback alongside `dockerfile`/`makefile`. A `Gemfile` is a dependency DECLARATION a person wrote; `Gemfile.lock` is its resolver OUTPUT and stays machine_generated by the exact-name rule, which is the lockfile distinction working exactly as rule 3 intends."
+      },
+      "downstream": "mapped, but NOT ingested as prose — chunking source as if it were narrative is how a graph fills with noise that scores well and answers nothing"
+    },
+    {
+      "id": "machine_generated",
+      "definition": "No human author. Dependencies, build output, compiled binaries, lockfiles, caches. Reproducible from human_source and therefore carrying no independent knowledge.",
+      "example_extensions": ["dll", "exe", "so", "dylib", "pyc", "pyo", "class", "o", "a", "lib", "pdb", "map", "min.js", "lock", "sum", "bin", "wasm", "jar", "nupkg", "whl", "egg", "log"],
+      "rc2_additions": {
+        "log": "19 observed files, 814,511 bytes, all program output (`backend.log`, `backend_minimal_final_2.log`). No human author, which is the whole test this class applies."
+      },
+      "these_are_archives_and_stay_here_anyway": "`jar`, `nupkg`, `whl`, `egg` are literally zip files, and rc2's new `opaque_container` class does NOT take them. Opacity is not what this class asserts — PROVENANCE is. A wheel is reproducible from human_source and therefore disposable; a .zip somebody made of their bank statements is reproducible from nothing. Both are sealed; only one is safe to skip. Moving them would trade a known provenance for an unknown one and would inflate the opaque count with bytes we already know how to ignore.",
+      "downstream": "NEVER ingested, NEVER walked when prunable at a folder boundary. Measured at 65.6% of a real drive by bytes (AC-2), overwhelmingly via the folder prune rather than per-file extension matching — which is the point: the cheap rule does the heavy lifting."
+    },
+    {
+      "id": "media",
+      "definition": "Images, audio, video. Genuine artifacts with genuine value, but not text and not addressable by the current ingestion pipeline.",
+      "example_extensions": ["jpg", "jpeg", "png", "gif", "heic", "webp", "svg", "bmp", "tiff", "mp3", "wav", "m4a", "mp4", "mov", "avi", "mkv", "webm", "tif", "ico"],
+      "rc2_additions": {
+        "tif": "`tiff` was already here and `tif` was not — the SAME FORMAT under its other spelling. Three observed files, 214.3 MB, all copies of one scanned document, and they were the third-largest thing in the escape hatch. The most expensive line in this whole artifact was a missing three-letter alias, which is worth recording because it is the failure mode an extension table has: it fails by omission, silently, and only a full enumeration finds it.",
+        "ico": "An icon is an image. Two observed files, 26,104 bytes."
+      },
+      "downstream": "mapped and counted; ingestion deferred, and its absence must be stated rather than implied"
+    },
+    {
+      "id": "opaque_container",
+      "added": "1.0.0-rc2, 2026-08-19, closing AC-5",
+      "definition": "An archive. Its contents cannot be known from metadata — and that is a FACT ABOUT ARCHIVES, not a gap in these rules.",
+      "why_it_is_not_unclassified": "`unclassified` means WE COULD NOT NAME THIS. `opaque_container` means WE NAMED IT EXACTLY, and the name is 'a sealed box'. Collapsing the two destroys the only distinction downstream actually acts on: an unclassified item is a prompt to IMPROVE THE RULES, an opaque one is a prompt to ASK THE CUSTOMER A QUESTION. It also corrupts this artifact's only honesty signal — with 3,192 MB of archives sitting in the escape hatch, the unclassified rate read as '21% of this drive defeated our rules', when the rules had not failed at all. They had returned the correct answer about a sealed box and had nowhere to put it.",
+      "why_it_is_not_machine_generated": "See `machine_generated.these_are_archives_and_stay_here_anyway`. Short version: that class asserts PROVENANCE (reproducible from human_source, therefore disposable); this one asserts OPACITY (contents unknowable, provenance unknown). A .whl is both machine-made and sealed; a .zip of somebody's tax documents is only sealed.",
+      "why_it_is_not_media_or_prose": "Neither can be asserted from the outside. A .zip may hold a photo library, a source tree, or a decade of correspondence, and the metadata says the same thing in all three cases. Guessing from the filename — `bank statements.zip` is an observed name on this drive — is exactly the inference-wearing-a-rule's-clothing that the `sensitive` candidate was rejected for.",
+      "example_extensions": ["zip", "zipx", "7z", "rar", "tar", "tar.gz", "tgz", "tar.bz2", "tar.xz", "gz", "bz2", "xz", "dmg", "iso", "cab", "onepkg"],
+      "observed_on_the_measured_drive": ["zip", "dmg", "tgz", "onepkg"],
+      "forward_coverage_not_observed": ["zipx", "7z", "rar", "tar", "tar.gz", "tar.bz2", "tar.xz", "gz", "bz2", "xz", "iso", "cab"],
+      "observed_vs_forward_note": "The split is stated because the two halves carry different evidence. The four observed extensions were MEASURED to be 59 files and 3,192.76 MB. The twelve forward ones are the rest of the archive family, added on format knowledge, and NOTHING here measures them — if one of them turns out to matter on another drive, that is a new measurement, not a confirmation of this one. `tar.gz`, `tar.bz2` and `tar.xz` are compound entries and depend on the compound probe firing before the bare tail; the bare tails (`gz`, `bz2`, `xz`) are listed too, so a deeply-dotted name like `a.b.tar.gz` still lands here via its tail rather than escaping.",
+      "tgz_is_the_nearest_miss": "`rt-client-0.5.3.tgz` is an observed file and it is almost certainly an `npm pack` output — build output, by any reading of its name. It is classed opaque_container anyway, and the line is drawn at the FORMAT: `jar`, `nupkg`, `whl` and `egg` are package formats and nothing else, so the extension alone establishes provenance; `.tgz` is a general-purpose gzipped tar that npm happens to use, so the extension establishes only that it is sealed. Reading `name-version.tgz` as 'therefore a package' is a filename guess, and this artifact does not make filename guesses — it makes exact-name matches, which is a different thing and is what rule 3 is for if somebody wants to name specific tarballs later.",
+      "onepkg_note": "A .onepkg is a packaged OneNote notebook — a cabinet archive whose contents are probably `.one` sections, which this artifact already calls human_prose. PROBABLY is the operative word and the reason it is here and not there: unpacking is the only way to know, and unpacking is the consent question below.",
+      "consent_boundary": "Deciding what is inside one requires OPENING it, and that is a DIFFERENT CONSENT SCOPE from reading a file the customer pointed at. Ingest consent says 'read this document'; it does not say 'unpack this container and enumerate whatever is in it', which can surface items the customer never knowingly offered — an archive is the one artifact class that can contain things its owner has forgotten are there. Until that scope exists as its own disclosure, an opaque_container is COUNTED AND SHOWN, never expanded.",
+      "downstream": "mapped and counted; NEVER expanded, NEVER ingested. Journey step 10 renders it as its own absence state — 'opaque: we can see the box, not the contents' — which is a different sentence from 'we could not classify this' and must not be rendered as the same one."
+    },
+    {
+      "id": "container",
+      "definition": "A folder. Classified in its own right because a folder's NAME is the single highest-value observed signal on the drive — it is what makes the structure already a knowledge graph.",
+      "downstream": "always mapped; contributes `contained_in` edges per vocabulary.v1.json"
+    },
+    {
+      "id": "unclassified",
+      "definition": "THE ESCAPE. An item no rule matched. Never silently dropped, never guessed at.",
+      "downstream": "mapped, counted, and its RATE is a required output of every run — a rising unclassified rate is how this artifact learns it has gone stale",
+      "escape_discipline": "This exists for the same reason ontology.v1.json's entity-type escape exists: an artifact that cannot say 'I do not know' will instead say something wrong, confidently, and nothing downstream can tell the difference.",
+      "rc2_the_escape_was_deliberately_not_emptied": "rc2 could have driven this to zero on the measured drive by naming every remaining tail. It did not. 395 files and 27.90 MB still escape, in 21 buckets, and each one is recorded with the reason in `residual_unclassified_findings`. A classifier with no escape is a classifier that lies, and the tidiest possible number here would have been produced by exactly the guessing this artifact rejects elsewhere. Read the two views together, as the artifact's own byte-vs-file rule demands: rc2 named 99.19% of the escaped BYTES and only 44.9% of the escaped FILES. The bytes were archives; the files are a long tail of fonts, shortcuts and markers that genuinely have no class here yet."
+    }
+  ],
+
+  "rules": {
+    "precedence": [
+      "1. FOLDER PRUNE — if any ancestor path segment matches `prune_segments`, the item is `machine_generated` regardless of its extension. A .md inside node_modules is a dependency's README, not your knowledge.",
+      "2. FOLDER SELF — if the item is a folder and its own name matches `prune_segments`, it is `machine_generated` and IS NOT WALKED.",
+      "3. EXACT NAME — otherwise, if the whole filename matches `machine_generated_names`, it is `machine_generated`. This beats extension and must, because `package-lock.json` and `config.json` share an extension and could not be less alike: one is generated by a resolver and rewritten on every install, the other is a decision somebody made.",
+      "4. EXTENSION — otherwise classify by extension against the class tables.",
+      "5. ESCAPE — otherwise `unclassified`.",
+      "Precedence is stated because it is where a reimplementation silently diverges: extension-first would classify half of node_modules as human_source and inflate the corpus by orders of magnitude."
+    ],
+    "rule_inputs_observed_only": ["name", "extension", "ancestor path segments", "folder|file facet", "size"],
+    "prune_segments": [
+      "node_modules", ".git", ".svn", ".hg", ".venv", "venv", "env", "__pycache__",
+      "site-packages", ".tox", ".mypy_cache", ".pytest_cache", ".ruff_cache",
+      "dist", "build", "out", "bin", "obj", "target", "coverage",
+      ".next", ".nuxt", ".turbo", ".parcel-cache", ".cache", ".gradle", ".m2",
+      ".terraform", "vendor", "packages", "bower_components", "Pods",
+      "DerivedData", ".dart_tool", ".angular", "__snapshots__"
+    ],
+    "machine_generated_names": [
+      "package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml",
+      "poetry.lock", "pdm.lock", "uv.lock", "cargo.lock", "composer.lock",
+      "dependency_links.txt", "top_level.txt", "requires.txt", "sources.txt",
+      "pkg-info", "entry_points.txt", "installed-files.txt", "record", "wheel",
+      "not-zip-safe", "zip-safe", "metadata",
+      "gemfile.lock", "podfile.lock", "packages.lock.json", "go.sum",
+      "requirements.lock", "flake.lock", ".ds_store", "thumbs.db", "desktop.ini",
+      ".signature.p7s"
+    ],
+    "machine_generated_names_note_3": "THIRD validation finding, 2026-08-19, from the AC-5 re-classification: 115 files named `.signature.p7s` — one per installed PowerShell module, a detached PKCS#7 catalogue signature emitted by the signing tool — were sitting in the escape hatch. Found by the SAME standing check that found the egg-info metadata: duplicate filenames. 115 identical names at ~12.8 KB each is not knowledge, it is one tool's output repeated 115 times. Recorded as an EXACT NAME, not as an extension: a bare `.p7s` may well be the detached signature of a document somebody cares about, and this artifact has no business claiming otherwise from three characters. All 115 observed files carry the exact name, so the residual list shows no `p7s` bucket — but a `.p7s` under ANY OTHER NAME still escapes, deliberately, and that is the difference between naming a tool's output and naming a file format.",
+    "machine_generated_names_note_2": "SECOND validation finding, 2026-08-14, from the AC-2 enumeration: Python setuptools egg-info metadata (dependency_links.txt at a MEDIAN of 1 byte, top_level.txt at 14, requires.txt, sources.txt, PKG-INFO) was classified human_prose because the extension is .txt. Twelve copies each, swept into the knowledge corpus. Extension alone cannot see this either — the fix is the same exact-name rule the lockfiles needed. Found by looking at DUPLICATE FILENAMES, which is now a standing check: a prose filename appearing a dozen times at a median of 1 byte is not prose.", "machine_generated_names_note": "Found by VALIDATION, not by design: the first run of this classifier against real observed filenames from the owner's drive left `package-lock.json` unclassified, because `json` is legitimately human_source and a lockfile is legitimately not. An extension table alone cannot express that. Recorded here rather than quietly widening the escape hatch, because the unclassified rate is the artifact's own honesty signal and lowering it by fiat would destroy the one number that tells us when this has gone stale.",
+    "prune_segment_caveat": "`vendor`, `packages`, `bin` and `env` are deliberately included AND deliberately dangerous — this repo's own ctxeco-*/vendor/ directories hold VENDORED GOVERNED ARTIFACTS that are very much knowledge. The rule is correct for third-party drive content and wrong for this codebase, which is exactly why the prune list is DATA in a versioned artifact rather than constants in a scanner: a deployment that needs a different list changes the artifact and re-validates, instead of editing code nobody re-reviews."
+  },
+
+  "residual_unclassified_findings": {
+    "preamble": "What rc2 did NOT name, why, and how much it is. 395 files, 29,252,710 bytes, 21 extension buckets, measured 2026-08-19 on the walk above. Every bucket is here; nothing is rounded away and nothing is capped. These are recorded as FINDINGS and not as new gates on purpose — minting an AC-number is a validator edit, and the gate list is not this file's to widen unilaterally (the same discipline vocabulary.v1.json states for its own gate array). Whoever picks these up assigns the ids.",
+
+    "installed_powershell_modules": {
+      "buckets": {"ps1xml": {"files": 140, "bytes": 21701785}, "psd1": {"files": 119, "bytes": 2906873}},
+      "totals": {"files": 259, "bytes": 24608658, "share_of_residual_bytes": "84.1%"},
+      "why_not_named": "This is the interesting one, and naming it would have been a MISTAKE that looked like progress. `.psd1` and `.ps1xml` are the other two members of the PowerShell file family whose `.ps1`/`.psm1` members are already human_source, so the extension rule would happily class all 259 as human_source. Every observed instance lives under `Documents/WindowsPowerShell/Modules/Az.*/` — INSTALLED THIRD-PARTY MODULE PAYLOAD, the drive's equivalent of node_modules, and 12 of the ps1xml files are literally named `*.generated.format.ps1xml`. Doing it would have moved 259 dependency files into the knowledge corpus, which is precisely the inflation the precedence rule's own commentary warns about ('extension-first would classify half of node_modules as human_source').",
+      "what_the_right_fix_is": "A path-level prune, not an extension. `WindowsPowerShell/Modules` (or the versioned module directory shape) belongs in prune_segments. rc2 CANNOT make that change: pruning happens during enumeration, so adding a segment now would reclassify walked items as machine_generated without moving their bytes into the pruned-subtree bucket, and AC-2's exact reconciliation would quietly stop reconciling. It is a re-walk, and AC-5's whole premise was that no re-walk was needed. Left honestly unnamed rather than fixed with the wrong instrument."
+    },
+
+    "binary_font_assets": {
+      "buckets": {"ttf": {"files": 16, "bytes": 458272}, "eot": {"files": 16, "bytes": 264272}, "woff": {"files": 16, "bytes": 202480}, "woff2": {"files": 16, "bytes": 155360}},
+      "totals": {"files": 64, "bytes": 1080384},
+      "why_not_named": "NO CLASS FITS, and that is the finding. A font is not media (this artifact's media is images, audio, video), not prose, not source, and not machine_generated — a typeface is authored by a person and is NOT reproducible from the repo's human_source, so calling it build output would be false. It is a fourth thing: a third-party binary asset vendored into a docs site. Inventing a class for 1.03 MB inside a gate about archives would be scope creep with no measurement behind it; leaving it in the escape hatch is the escape hatch doing its job."
+    },
+
+    "extensionless_files": {
+      "buckets": {"(no extension)": {"files": 7, "bytes": 3470211}},
+      "why_not_named": "Second-largest residual by bytes and completely undecidable from metadata. One file named `images` at 1,154,355 bytes, three copies of `engram virtual context store architecture` at 771,420 each, three named `favicons` at 532. No extension, no recognised whole name, and the sizes say only that two of them are big. The extensionless names rc2 DID add (license, cname, codeowners, gemfile) are conventions with one meaning everywhere; these are not."
+    },
+
+    "pointer_and_shortcut_files": {
+      "buckets": {"url": {"files": 10, "bytes": 2121}, "lnk": {"files": 6, "bytes": 12935}, "rdp": {"files": 6, "bytes": 588}},
+      "totals": {"files": 22, "bytes": 15644},
+      "why_not_named": "Another missing class, cleanly described: a file whose entire content is a LOCATION of something else. It holds no knowledge and is not machine output; it is a reference. Same judgement as the fonts — real, nameable, and not this gate's to name."
+    },
+
+    "modifier_suffixed_names": {
+      "buckets": {"example": {"files": 11, "bytes": 20179}, "local": {"files": 9, "bytes": 1968}, "bak": {"files": 2, "bytes": 4672}, "azure": {"files": 1, "bytes": 672}},
+      "totals": {"files": 23, "bytes": 27491},
+      "why_not_named": "`.env.example`, `.env.local`, `.env.bak`, `.env.azure`, `azure-functions-deploy.yml.example` — a KNOWN base format plus a trailing MODIFIER. rc2 could have enumerated `env.example` and `env.local` as compound entries (the mechanism exists; `min.js` uses it) and it deliberately did not, because enumerating base x modifier is a cross-product that the table would lose to. The honest statement is that rule 4 reads a suffix and these names put the identity in the middle. A general 'strip a trailing modifier and re-probe' step is a change to the RULE PRECEDENCE, which is out of AC-5's scope and would need its own mutation battery."
+    },
+
+    "prefix_identity_names": {
+      "buckets": {"worker": {"files": 1, "bytes": 587}},
+      "why_not_named": "One file: `Dockerfile.worker`. `dockerfile` is already human_source, and this file's identity is in its PREFIX. Rule 4 reads tails. There is no prefix rule and rc2 did not add one. Kept in the list despite being 587 bytes because it names a structural limit, not a rounding error."
+    },
+
+    "zero_byte_and_marker_files": {
+      "buckets": {"gitkeep": {"files": 10, "bytes": 270}, "localized": {"files": 3, "bytes": 0}, "nojekyll": {"files": 2, "bytes": 0}, "deploy-trigger": {"files": 1, "bytes": 52}},
+      "totals": {"files": 16, "bytes": 322},
+      "why_not_named": "Presence markers. `.gitkeep` and `.nojekyll` exist so that a directory or a build behaves a certain way; five of the sixteen are literally zero bytes. Their content is their existence, which no class here describes. Naming them human_source to shrink a count would be the tidy-number move this artifact exists to refuse."
+    },
+
+    "app_state_and_one_offs": {
+      "buckets": {"edge": {"files": 2, "bytes": 46188}, "thmx": {"files": 1, "bytes": 3225}},
+      "totals": {"files": 3, "bytes": 49413},
+      "why_not_named": "`engram.edge` and `preferences.edge` are Microsoft Edge workspace state under `Apps/`; `themedata.thmx` is an Office theme resource inside a saved-page `.fld` folder. The .thmx is technically a zip and rc2 still refused to call it an opaque_container: it is not a container a person made and would be asked about, it is a resource an application emitted, and putting it there would pad the archive count with something no consent question will ever be asked about. Three files, honestly unnamed."
+    },
+
+    "residual_arithmetic": "259 + 64 + 7 + 22 + 23 + 1 + 16 + 3 = 395 files. 24,608,658 + 1,080,384 + 3,470,211 + 15,644 + 27,491 + 587 + 322 + 49,413 = 29,252,710 bytes. Both match the after_rc2 unclassified row EXACTLY. If a future revision names one of these groups, both totals must move by that group's exact figures or something has been double-counted."
+  },
+
+  "self_describing_counts": {
+    "measured": "2026-08-19, by loading this artifact with eval/artifact_classifier.py — these are counts OF THIS FILE, not of any drive",
+    "classes": 7,
+    "class_ids": ["human_prose", "human_source", "machine_generated", "media", "opaque_container", "container", "unclassified"],
+    "extension_table_entries": 165,
+    "per_class_extension_entries": {"human_prose": 29, "human_source": 79, "machine_generated": 22, "media": 19, "opaque_container": 16, "container": 0, "unclassified": 0},
+    "machine_generated_names": 31,
+    "prune_segments": 36,
+    "rc1_values_for_comparison": {"classes": 6, "extension_table_entries": 134, "machine_generated_names": 30, "prune_segments": 36},
+    "why_these_are_written_down": "So a validator can PIN them and a deletion cannot pass. `container` and `unclassified` carry zero extensions BY DESIGN — one is decided by the folder facet, the other is the absence of a decision — and a count table that omitted them would let somebody add extensions to the escape hatch, which would be a contradiction in terms.",
+    "how_to_regenerate": "python3.12 eval/artifact_classifier.py"
+  },
+
+  "rejected_from_v1": [
+    {
+      "candidate": "sensitive",
+      "reason": "REJECTED, and this is the most important rejection in the artifact. It is trivially tempting to class `Documents/legal/`, `Documents/tax/`, `Documents/paystubs/` as sensitive from the folder name. That is INFERENCE wearing a rule's clothing: the name is observed, the sensitivity is a guess. A `sensitive: false` on a misnamed folder is a confidently-wrong safety signal that a customer would reasonably rely on. Sensitivity is a human classification decision (Plan 23's truth_class precedent: mandatory human-supplied reason, assertedBy, assertedAt, append-only), not a derivation."
+    },
+    {
+      "candidate": "is_duplicate",
+      "reason": "REJECTED — requires a content hash. Graph exposes no reliable cross-drive content hash for this purpose, and same-name-same-size is a guess, not an observation."
+    },
+    {
+      "candidate": "is_important / relevance_score",
+      "reason": "REJECTED — inferred, unbounded, and tunable, which per Plan 25's vocabulary discipline means it is not admissible to the observed graph at all."
+    },
+    {
+      "candidate": "project_of",
+      "reason": "REJECTED for v1 — plausibly derivable (a folder containing package.json/pyproject.toml/go.mod IS a project root, and that is an observation), but it needs the manifest-file evidence rule specified and tested before it is frozen. Deferred, not dismissed."
+    },
+    {
+      "candidate": "language",
+      "reason": "REJECTED as an edge; it is a PROPERTY of a human_source item, and vocabulary.v1.json already rejects storing derivable properties as edges (the sibling_of precedent)."
+    }
+  ],
+
+  "required_run_outputs": [
+    "count and bytes per class",
+    "unclassified rate",
+    "pruned folder count, pruned byte estimate, and the SEGMENT that fired for each — never a silent truncation",
+    "the artifact version and SHA-256 this run was classified under"
+  ],
+
+  "open_gates": [
+    "AC-1: validator + mutation battery, every mutation rejected by a SPECIFICALLY NAMED check (the standing bar; a check that cannot fail is not a check)",
+    "AC-2: CLOSED 2026-08-14 by a full enumeration (15,657 items, 346 subtrees pruned, byte reconciliation exact). It did what a gate is for: the folder-level estimate was HIGH by 32.4 points and is now marked SUPERSEDED rather than quietly replaced.",
+    "AC-5 (opened by AC-2): CLOSED 2026-08-19 by rc2. THE ORIGINAL TEXT, verbatim, so the gate can be read against what it asked for: 'the escape hatch caught 3,437 MB — 21.4% of the drive — across 29 unknown extensions, dominated by .zip (1,282 MB) and .dmg (1,908 MB). An archive is neither prose nor source nor machine output: it is an OPAQUE CONTAINER whose contents cannot be known from metadata, and deciding requires opening it, which is a different consent scope. v1.0.0 needs that class plus the 29 extensions, and re-classification needs NO re-enumeration — classification is a pure function of metadata already held.'",
+
+    "AC-3: agreement check against a human pass over a sample — the classifier's honest error rate, published, not assumed",
+    "AC-4: decide `project_of` on manifest evidence, or record it as permanently out"
+  ],
+
+  "gate_evidence": {
+    "why_this_is_a_separate_object": "open_gates stays a FLAT ARRAY OF STRINGS — that is the shape it had at rc1 and the shape anything reading it expects. Evidence for a closed gate is structured and belongs here, keyed by gate id, so that closing a gate is an addition here rather than a quiet rewrite of the gate line.",
+
+    "AC-5_evidence": {
+      "class_added": "opaque_container, with its consent boundary stated and its separation from machine_generated argued rather than asserted",
+      "measurement": "see the_economy_argument.measurement_AC5_reclassification — same walk file, sha256 1cd1fbf0b18dfdce02397316c9eac9b6c08f64bc248cee09e843ac998eea61fa, re-classified only",
+      "no_re_enumeration": "CONFIRMED. The gate's prediction held; prune_segments is byte-identical to rc1 and the pruned-subtree row (346 folders / 10,810,481,367 bytes / 64.274%) is unchanged.",
+      "the_headline_numbers_reproduced": "3,437 MB reproduced EXACTLY (3,604,502,727 bytes = 3437.52 MB). .zip reproduced at 1,281.8 MB against the gate's 1,282; .dmg at 1,907.6 against 1,908. The escape hatch now holds 27.90 MB, 0.174% of the drive.",
+      "result_by_bytes": "21.431% -> 0.174%. 19.905 points to opaque_container, 1.336 to media, 0.014 to machine_generated, 0.002 to human_source, 0.174 still unclassified.",
+      "result_by_files": "717 -> 395. Only 44.9% of the escaped FILES were named, against 99.19% of the escaped BYTES. Both stated, per this artifact's own byte-vs-file rule.",
+      "what_this_gate_did_NOT_close": "The 395 residual files are enumerated bucket-by-bucket in `residual_unclassified_findings`, with three genuinely missing classes named (installed third-party module payload — needs a PRUNE and therefore a re-walk; binary font assets; pointer/shortcut files) and two structural rule limits named (trailing modifier suffixes, prefix-carried identity). None of these is claimed as closed and none is quietly folded into an existing class."
+    },
+
+    "AC-5_SUPERSEDED_extension_count": {
+      "superseded_value": "29 unknown extensions",
+      "measured_value": "37 unknown extension buckets (36 real extensions plus one bucket for files with no extension at all)",
+      "measured": "2026-08-19, rc1 rules re-run over the byte-identical walk file",
+      "why_it_was_wrong": "Unknown. It is NOT reproducible from the recorded input: the same walk, under the rc1 rules, yields 37 buckets and 717 escaped files. The BYTE figures in the same sentence — 3,437 MB total, 1,282 MB of .zip, 1,908 MB of .dmg — all reproduce to the decimal, so the measurement was real and only the bucket count is off; most likely a hand count, or a count taken before the note_2 exact names existed (which changes 729 files to 717 but does not change the bucket count). Marked rather than replaced, per the same discipline as SUPERSEDED_folder_level_estimate: a number that quietly disappears is indistinguishable from one that was never wrong, and this one is quoted in docs/roadmap/PROGRESS.md row 34-S10b as 'the opaque-container class and its 29 extensions'. That row needs the same correction and rc2 cannot make it from here.",
+      "error": "LOW by 8 buckets",
+      "and_the_count_that_actually_landed": "opaque_container took FOUR of the 37 observed buckets (zip, dmg, tgz, onepkg) and 92.88% of the escaped bytes. 'The 29 extensions' was never the right unit for this gate — bytes were, and files second. Twelve further archive extensions are listed as declared forward coverage and are marked as unmeasured."
+    }
+  }
+}

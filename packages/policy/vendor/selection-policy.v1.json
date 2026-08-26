@@ -1,0 +1,147 @@
+{
+  "artifact": "selection-policy",
+  "version": "1.1.0-rc1",
+  "status": "release-candidate",
+  "created": "2026-08-14",
+  "owner_directive": "make the actual algorithms ... to determine from the initial walk to decide what we ingest (owner, 2026-08-14)",
+  "purpose": "ORDER the ingestion-eligible candidates by cheap observed evidence, so a budget can be spent on the documents most likely to carry knowledge. Runs after artifact-classes, on human_prose only.",
+  "what_this_is_NOT": {
+    "not_an_importance_claim": "artifact-classes REJECTED `is_important / relevance_score` from the observed graph as inferred, unbounded and tunable. That rejection stands and this artifact does not overturn it. The difference is what the output IS: an observed-graph predicate asserts a fact about a file forever; this produces a RANKING used once to spend a budget. Nothing here is written to the observed graph as an edge.",
+    "not_a_threshold": "The policy orders candidates. It does not decide how many to take. The cut is a BUDGET decision made by a human or a spend limit, and moving the cut changes what is ingested without changing any claim this artifact makes.",
+    "not_a_quality_judgement": "A low rank means 'cheap evidence did not distinguish this', never 'this document is bad'. A customer's most precious file could rank last. That is why the cut is theirs and why nothing is ever deleted or hidden on the strength of a rank."
+  },
+  "why_derived_and_not_inferred": "Every signal reads only fields already in the walk: name, size, extension, path segments, modified timestamp, and counts computed ACROSS the walk. No model is consulted, no content is opened, and the same corpus produces the same ordering every time. Rank is reproducible and each contributing signal is reported per file, so a rank can be explained rather than merely asserted.",
+  "signals": [
+    {
+      "id": "S0_has_substance",
+      "kind": "HARD FILTER, not a score",
+      "rule": "size >= min_bytes",
+      "rationale": "A 1-byte or 14-byte file has no content to embed. Measured on a real drive: 81 of 2,026 prose candidates were under 200 bytes. Filtering is honest here in a way scoring is not — there is nothing to rank.",
+      "reports": "rejected_no_substance"
+    },
+    {
+      "id": "S1_name_rarity",
+      "kind": "score",
+      "rule": "1 / count(same filename across the whole walk)",
+      "rationale": "THE CENTRAL SIGNAL, and it is information-theoretic rather than heuristic: a filename occurring 104 times across 16 repositories carries almost no information about its contents; a filename occurring once carries a great deal. Measured: only 25% of prose filenames on the drive are unique. This is TF-IDF's intuition applied to structure instead of words.",
+      "caveat": "Rarity alone would discard every README.md, and a repository's README is frequently its single most valuable document. S1 must never be used without S2."
+    },
+    {
+      "id": "S2_family_outlier",
+      "kind": "score",
+      "rule": "TWO BRANCHES, by the size of the name-family. (a) name-family has MORE THAN ONE member: min(size / median(size of all files sharing this filename), family_outlier_cap) / family_outlier_cap — unchanged. (b) name-family has EXACTLY ONE member: the file IS its own family and the ratio is 1.0 by definition, so compare against the EXTENSION family instead — the PERCENTILE of this file's size within the sizes of all eligible candidates sharing its extension. When that extension has fewer than `singleton_min_population` candidates, return 0.5 (neutral) and record that the branch abstained; a percentile over four files is noise wearing a number.",
+      "rationale": "The correction to S1, and the reason the pair works. Within the 104 README.md files, the median is 1,312 bytes; a 40 KB README is not boilerplate, it is a document somebody wrote. This recovers exactly the valuable instances of common names that S1 would throw away.",
+      "validation_finding_2026_08_14": "FIRST RUN WAS DEGENERATE AND SHIPPED-LOOKING. With the comparison class fixed to the name-family, a unique name is its own family: median == the file itself, ratio == exactly 1.0, so S2 returned a SINGLE value (0.3155) for all 494 unique-named files — structurally blind precisely where S1 is strongest. Result: 128 files tied at the top score, only 15 distinct scores in the top 100, and an output that was alphabetical order wearing a score. Caught by measuring the SCORE DISTRIBUTION, not by reading the code or the output, which looked entirely reasonable. Fixed by falling back to the extension-family when the name-family has one member: 15 -> 84 distinct scores in the top 100.",
+      "caveat": "Large is not the same as good. A 14 MB CSV outranks a 6 KB design note on this signal alone, which is why it is one term among several and why `media`/data-shaped files are handled by class, not here.",
+      "measured_2026_08_19": {
+        "corpus": "one real personal OneDrive, 8,188 files, 1,930 eligible prose candidates",
+        "note": "ALL FIGURES BELOW ARE FROM eval/selection.py, THE SHIPPED IMPLEMENTATION. An earlier draft of this amendment quoted a hand reconstruction of the rule text and was wrong twice — it predicted 933 distinct scores where the real code gives 849, and it put a food-delivery receipt at rank 19 where the real log-compressed form puts it at 36. Reconstructions of a rule are not measurements of a program.",
+        "rule_as_written": {
+          "distinct_scores": 509,
+          "largest_tie": 128,
+          "payslip_rank": 277,
+          "note": "the 2026-08-14 defect, reproduced by implementing the normative rule verbatim"
+        },
+        "shipped_before": {
+          "distinct_scores": 840,
+          "largest_tie": 106,
+          "share_tied": 0.638,
+          "payslip_rank": 466,
+          "food_delivery_receipt_rank": 36
+        },
+        "shipped_after": {
+          "distinct_scores_rounded": 849,
+          "distinct_scores_exact": 1037,
+          "largest_tie": 92,
+          "share_arbitrary": 0.51,
+          "payslip_rank": 425,
+          "food_delivery_receipt_rank": 175
+        },
+        "reading": "The receipt fell 139 places and the top of the list is now singular. The distribution barely moved (840 -> 849 rounded) because most remaining ties were never S2's fault: round(total, 4) on the SORT KEY collapsed 1,037 exact scores to 849, and the largest surviving group of 92 is a real corpus property — a doc set vendored six times with identical sizes and timestamps, every copy the median of its own family, so all four signals agree exactly. Those 92 are not mis-ranked; they are indistinguishable, and the ranking now says so instead of letting alphabetical order read as merit."
+      }
+    },
+    {
+      "id": "S3_recency",
+      "kind": "score",
+      "rule": "decay on lastModifiedDateTime",
+      "rationale": "Recently touched documents are likelier to be live knowledge. MODIFIED, not created: the AC-2 walk showed created dates are when a file landed in OneDrive, not when it was authored — 850 in 2025 and 1,176 in 2026 on a drive holding decades of work. Created is unusable; modified is at least a real event."
+    },
+    {
+      "id": "S4_authored_location",
+      "kind": "score",
+      "rule": "bonus for a path segment in `authored_segments`, penalty for one in `derived_segments`",
+      "rationale": "A file under docs/ or design/ was placed there deliberately. A file under generated/ or fixtures/ was placed there by a process. Both are observed path facts, not guesses about content."
+    }
+  ],
+  "parameters": {
+    "min_bytes": 200,
+    "weights": {
+      "S1_name_rarity": 0.4,
+      "S2_family_outlier": 0.3,
+      "S3_recency": 0.15,
+      "S4_authored_location": 0.15
+    },
+    "recency_half_life_days": 365,
+    "family_outlier_cap": 8.0,
+    "authored_segments": [
+      "docs",
+      "doc",
+      "design",
+      "architecture",
+      "adr",
+      "rfc",
+      "notes",
+      "spec",
+      "proposals",
+      "research"
+    ],
+    "derived_segments": [
+      "generated",
+      "gen",
+      "fixtures",
+      "testdata",
+      "test-data",
+      "samples",
+      "examples",
+      "snapshots",
+      "locale",
+      "i18n",
+      "translations"
+    ],
+    "weights_note": "THESE WEIGHTS ARE UNVALIDATED. They were chosen to make S1 and S2 jointly dominant because that pairing is the argument; they are not fitted to any outcome, because no outcome has been measured yet. Any claim that this ordering is GOOD is unsupported until AC-S2 below runs.",
+    "singleton_min_population": 8,
+    "singleton_min_population_note": "Below this many same-extension candidates the singleton branch abstains at 0.5 rather than computing a percentile. INVENTED HERE and unvalidated, like the weights — it is a parameter in the artifact, not a constant in code, so it can be fitted when AC-S2 runs."
+  },
+  "evaluation_design": {
+    "the_only_question_that_matters": "Does ingesting the top-N by this policy answer real questions better than ingesting N documents chosen at random?",
+    "arms": [
+      {
+        "id": "A_full",
+        "corpus": "every eligible human_prose document",
+        "role": "ceiling — what does spending everything buy?"
+      },
+      {
+        "id": "B_selected",
+        "corpus": "top-N by selection score",
+        "role": "the claim"
+      },
+      {
+        "id": "C_random",
+        "corpus": "N drawn uniformly at random from the same eligible pool, fixed seed",
+        "role": "THE CONTROL"
+      }
+    ],
+    "decision_rule": "If B does not beat C, the policy is worthless and must be said to be worthless. Beating A is not required and should not be expected — B is trying to approach A at a fraction of the cost, not exceed it.",
+    "why_the_control_is_non_negotiable": "Plan 25's headline 93.9% survived until a shuffle control was run against it and the shuffled arm scored 95.9%. A selection score is exactly the kind of artifact that produces a plausible-looking number with no signal in it, because ANY ordering of a corpus produces some ordering of results. Random-N is the only thing that can tell the two apart.",
+    "BLOCKER_stated_plainly": "eval/golden-set.v1.json holds 48 frozen questions, but they are about the ctxEco PLATFORM — OPA sidecars, Alertmanager receivers, rate-limit trust boundaries. The corpus this policy selects from is a personal OneDrive of 16 unrelated project trees. Scoring selection against questions the corpus cannot answer would measure nothing and look like a result. A question set matched to THIS corpus does not exist yet (Plan 25 task: '20 real owner questions'), and until it does this policy can be RUN but cannot be VALIDATED. Running it and reporting the ordering is honest; reporting that the ordering is good is not."
+  },
+  "open_gates": [
+    "AC-S1: mutation battery — every signal removable, each removal caught by a specifically named test",
+    "AC-S2: the three-arm evaluation above, INCLUDING the random-N control, against a corpus-matched question set that must be written first",
+    "AC-S3: per-file explanation — every rank reports its contributing signal values, so a customer asking 'why is this ranked low' gets an answer rather than a number",
+    "AC-S4: CLOSED 2026-08-14 by eval/selection_stability.py, RE-MEASURED 2026-08-19, and it decides where effort should NOT go.\n\nAMENDED 2026-08-19. The gate text carried the 2026-08-14 figures for five days after the singleton-branch and sort-key repairs changed the ranking they were measured on. Those figures are now MARKED SUPERSEDED below rather than deleted, because a number that moved has to show what it moved from.\n\nCURRENT MEASUREMENT (2026-08-19, authoritative). Command: `python3.12 eval/selection_stability.py ~/onedrive-rc.jsonl --top 100`, against the post-repair ranking — 1,930 ranked candidates of 8,188 walked files, 200 random draws at seed 20260814. Worst-case top-100 retention under +/-20% and +/-50% single-weight perturbation: 0.87 (the worst cell is S4_authored_location at -50%). Ablation, each signal alone vs the full ranking: S2 0.48, S4 0.18, S3 0.11, S1 0.09; all-four-equal 0.98. NO single signal reproduces the ordering, so the four genuinely combine. THE CONTROL IS STILL THE RESULT: 200 draws of RANDOM weights reproduce the top-100 at mean 0.88 (p05 0.62, p95 0.99) against the declared weights' worst perturbation of 0.87. Recorded identically in docs/roadmap/PROGRESS.md row `25-METADATA_KNOWLEDGE_GRAPH:H` (0.87 against 0.88).\n\nTHE DIRECTION FLIPPED, AND IT STRENGTHENS THE CONCLUSION. On 2026-08-14 the declared weights' worst perturbation (0.81) sat ABOVE the random-weight mean (0.77) — a thin margin, but a margin. It is now BELOW it: 0.87 against 0.88. Random weights reproduce the declared ordering at least as well as the declared weights survive being nudged. Read plainly, that is not a weaker case for 'do not tune the weights', it is a stronger one: on this corpus the coefficients are indistinguishable from arbitrary, and the top-100 is whatever the four signals AGREE on. Nothing here says the RANKING is good — AC-S2 is what would say that, and it has not run.\n\nSUPERSEDED 2026-08-14 FIGURES (kept, not quoted as current): worst-case perturbation retention 0.81; ablation S2 0.57, S1 0.17, S4 0.16, S3 0.12; random control mean 0.77 (p05 0.53, p95 0.98). They were measured against the PRE-REPAIR ranking — the log-ratio singleton branch and the round(total, 4) sort key, both changed 2026-08-19 — so they describe an ordering that no longer exists and must not be cited as this policy's stability.\n\nTWO CONSEQUENCES, both actionable and both unchanged by the rerun: (1) DO NOT TUNE THE WEIGHTS; effort belongs in signal definitions, not their coefficients, and any future result attributed to weight tuning is noise. (2) The ranking is robust, which also means insensitive — it may be equally insensitive to genuine improvements, so a signal change must be checked against this same harness to show it moved anything at all. The 2026-08-19 repair is that case done right: it moved a SIGNAL (the percentile singleton branch) and left the weights alone.",
+    "AC-S4 (harness defect found and fixed): The first run reported S1_name_rarity ALONE reproducing the full top-100 at 1.00 — which would have been a headline finding and was entirely an artefact of the test. 494 files tie at S1=1.0, Python's sort is stable, and the harness re-sorted a list already in baseline order, so the tie-break handed the baseline ranking straight back. The harness was measuring itself. Fixed by tie-breaking on path — arbitrary, but not inherited from the thing under test. Recorded because the corrected value is 0.17, and the difference between 1.00 and 0.17 is the difference between a false headline and a real one."
+  ],
+  "amended": "2026-08-19",
+  "amendment_note": "S2_family_outlier's NORMATIVE RULE now carries the singleton branch, and the branch is specified as a PERCENTILE rather than a ratio. Two separate problems, found 2026-08-19 by running the policy against a real 8,188-file drive.\n\n(1) THE RULE AND THE IMPLEMENTATION DISAGREED. validation_finding_2026_08_14 recorded the degenerate-singleton defect AND its remedy, and eval/selection.py implements that remedy — but the `rule` field, the only normative one, was never updated. Implementing from the artifact as written reproduces the documented defect exactly: 494 unique-named files on one constant, 128 tied at the top, 509 distinct scores over 1,930 candidates. Plan 25B §2.3 flags that this classifier has to exist twice and calls that a risk; this is what the risk looks like when it lands. A remedy written only in a validation note is a remedy the second implementer does not get.\n\n(2) THE REMEDY ITSELF IS OUTLIER-SENSITIVE. The shipped log-compressed ratio against the extension family scores 840 distinct / 106 largest tie / 63.8% tied, and puts a 4.3 MB food-delivery receipt at rank 36 of 1,930 — top 1.9% — because one large binary still dominates a heavy-tailed size distribution even after log compression. The percentile form is better on every measured axis. SUPERSEDED 2026-08-19 (Plan 34 Stage 0): this sentence quoted 933 distinct / 95 largest tie / 56.0% tied / receipt at 172, which came from the SAME hand reconstruction that paragraph (1) above disavows — the artifact was making, in its own remedy, the exact error it had just finished documenting. The measured figures from the shipped eval/selection.py, recorded in signals[S2].measured_2026_08_19.shipped_after, are 849 distinct rounded / 1,037 exact / 92 largest tie / 0.51 share arbitrary / receipt at 175. The conclusion is unchanged and the receipt still falls 139 places; only the arithmetic was reconstructed rather than run. Percentile is bounded by construction and cannot be saturated by an outlier, which is the property this signal needs on a corpus that is 88% markdown by count and 68% binary by bytes."
+}

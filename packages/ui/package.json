@@ -1,21 +1,26 @@
 {
   "name": "@shelfmark/ui",
   "version": "0.0.0",
-  "description": "React components for the shelfmark flow — Connections, DriveMap (consent, live narration stream, inversion landing, selection ledger), IngestStatus — with en/es-MX i18n and a parity gate",
+  "description": "React components for the shelfmark flow \u2014 Connections, DriveMap (consent, live narration stream, inversion landing, selection ledger), IngestStatus \u2014 with en/es-MX i18n and a parity gate",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./test-setup": "./dist/test-setup.js",
     "./styles.css": "./dist/styles.css",
     "./tailwind-preset": "./dist/tailwind-preset.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "node scripts/check-parity.mjs && tsup src/index.ts src/test-setup.ts --format esm --dts --sourcemap && cp src/styles.css dist/ 2>/dev/null || true",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "peerDependencies": {
     "@tanstack/react-virtual": "^3.0.0",
@@ -35,5 +40,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.18.1"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

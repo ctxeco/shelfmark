@@ -1,0 +1,188 @@
+{
+  "artifact": "funnel-policy",
+  "version": "1.0.0-rc1",
+  "status": "release-candidate",
+  "created": "2026-08-20",
+  "decision": "JRN-D1 (owner, 2026-08-19): INCLUDE AND REPORT. This artifact carries no never-suggest category and no ask-first gate. Sensitive shapes are DETECTED and REPORTED AS COUNTS, never subtracted, never rendered as a browsable ranked list of paths. Live credentials get rotate-don't-exclude advice. The schema itself encodes the decision: every sensitive shape rule carries report: true and subtract: \"NEVER\", the reference evaluator refuses to load a policy where any shape says otherwise, and the validator fails by name on any key or rule id that spells a holdback. A future never-suggest rule is therefore a build failure, not a design drift.",
+  "purpose": "OWN the default-selection cut — decide MEMBERSHIP of the default ingestion selection from observed metadata alone. This is the thing selection-policy.v1.json deliberately refuses to be (its not_a_threshold declaration is why this artifact exists, per JRN-6): the two compose, never overlap. The funnel decides WHAT is in the default; selection-policy orders WHAT REMAINS so a budget can be spent well. Nothing here is a quality judgement and nothing here is written to the observed graph.",
+  "composes_with": {
+    "selection_policy": "graph/observed/selection-policy.v1.json — ORDERS the funnel's survivors. Its S0_has_substance floor is the single home of the stub bound; this artifact references it and never duplicates the number.",
+    "artifact_classes": "graph/observed/artifact-classes.v1.json — NAMES the candidate population. The funnel starts where classification ends.",
+    "boundary": "Moving the cut is the customer's act (step 12), always available in both directions: one click removes, one deliberate act re-adds a reported category. The funnel defines the DEFAULT, never a limit."
+  },
+  "candidates": {
+    "class": "human_prose",
+    "classification_artifact": "graph/observed/artifact-classes.v1.json",
+    "classification_version": "1.0.0-rc2",
+    "files_only": true,
+    "recompute_note": "Walk JSONL records carry artifact_class/class_rule fields RECORDED AT WALK TIME — the 2026-08-14 walk recorded rc1 output, and rc2 (2026-08-19) moved 5 files into human_prose (1,978 -> 1,983). An evaluator that trusts the recording measures a funnel over a population that no longer exists. Every record is RE-CLASSIFIED under the pinned version above, and the evaluator refuses to run when the loaded classifier version differs from this pin."
+  },
+  "rule_inputs_observed_only": "Every detection below reads fields already in the walk: name, path segments, exact byte size, extension — plus counts computed ACROSS the walk (fingerprint groups). No model is consulted, no content is opened, no timestamp is read, and the same walk produces the same funnel every time. A rule that needs content is a different artifact with a different consent.",
+  "subtraction_rules": [
+    {
+      "id": "archived_dump_copy",
+      "scope": "location",
+      "detection": {
+        "kind": "ancestor_order",
+        "first": "(^|[^a-z])archives?([^a-z]|$)|(^|[^a-z])backups?([^a-z]|$)",
+        "then": "(^|[^a-z])downloads?([^a-z]|$)",
+        "reading": "an ancestor segment matching `first` strictly SHALLOWER than an ancestor segment matching `then` — a Downloads-like tree INSIDE an archive/backup tree. Downloads/archive is not a match: an archive folder inside a live download tree is not an archived copy of that tree. Segment regexes are bounded on both sides so personalDownloads never reads as Downloads and datastax never reads as tax-adjacent noise."
+      },
+      "rationale": "An archived copy of a dump tree is the same set of documents already standing somewhere shallower; walking it into the default double-counts everything in it. On the measured drive this is two full archived copies of a Downloads tree carried inside project backups. This rule is LOCATION-scoped and therefore NEVER PROPAGATES across fingerprints: it says where the copy sits, not what the document is, and propagating it would subtract the surviving original — the recoverable-document false positive the propagation asymmetry exists to prevent.",
+      "cannot_detect": "An archived dump under an innocuous name (a backup tree called `old-stuff/`, a camel-cased `personalDownloads` nested in a backup — the segment regex is deliberately bounded and does not reach inside compound words), an archive that was renamed after copying, or contents of actual .zip/.dmg archives — those are opaque_container and never reach this funnel at all. What this rule misses, duplicate_fingerprint usually catches one level later, by exact (name, size) identity instead of path evidence."
+    },
+    {
+      "id": "stub_under_200b",
+      "scope": "document",
+      "detection": {
+        "kind": "size_under",
+        "floor_from": "selection-policy.v1.json#/parameters/min_bytes",
+        "reading": "size strictly under the referenced floor is subtracted; size equal to the floor stands. This is S0_has_substance's bound, REFERENCED, NOT DUPLICATED — the number has exactly one home and it is not here. If selection-policy moves the floor, the funnel moves with it in the same commit or the cross-artifact gates disagree loudly."
+      },
+      "rationale": "A 14-byte file has no content to embed; subtracting it is honest where scoring it is not. The floor is a NAMED bound and the evaluator records how many files it bites and their bytes on every run — no silent cap, ever.",
+      "cannot_detect": "A 300-byte file of filler is substance to this rule; only content reading could say otherwise, and this funnel does not read content."
+    },
+    {
+      "id": "receipt_shape",
+      "scope": "document",
+      "detection": {
+        "kind": "name_regex",
+        "regex": "(^|[^a-z])receipts?([^a-z]|$)|uber[ _-]?eats|door[ _-]?dash|grub[ _-]?hub|insta[ _-]?cart|post[ _-]?mates|order (received|confirmation)"
+      },
+      "rationale": "Noise, not sensitivity — a food-delivery receipt teaches the system nothing, and on the measured drive two of them sat among the ten largest prose candidates. Excluded because it carries no knowledge, EXPLICITLY not because it is private; the retired survey design is not re-entering through this row.",
+      "cannot_detect": "A receipt whose filename says nothing (a scanner's IMG-style name, an order number with no vendor word). Those stay in the default and cost a click in step 12."
+    },
+    {
+      "id": "machine_output_in_prose",
+      "scope": "document",
+      "detection": {
+        "kind": "name_regex",
+        "regex": "^(logs?|log[ _-]?\\d+|output|stdout|stderr|console|dump|export|tree|file[ _-]?list|git[ _-]?file[ _-]?list|dir(ectory)?[ _-]?listing)\\.(txt|md)$"
+      },
+      "rationale": "A .txt extension is not authorship. logs.txt and GIT_FILE_LIST.txt are process output wearing a prose extension; the classifier cannot see that from the extension alone, so the funnel names the known machine stems and subtracts them here.",
+      "cannot_detect": "Machine output under a human-looking name (`meeting-notes.txt` produced by a transcriber, an LLM dump saved as `ideas.md`). Name evidence only reaches names."
+    },
+    {
+      "id": "third_party_publication",
+      "scope": "document",
+      "detection": {
+        "kind": "name_regex_with_extensions",
+        "regex": "e-?book|white[ _-]?paper|handbook|textbook|course[ _-]?outline|professional[ _-]?guide|(^|[^a-z])(nist|iso|ieee|rfc|ansi)([ ._-]?[a-z]+){0,3}[ ._-]?\\d|o'?reilly|packt|manning|wiley|pearson|addison[ _-]?wesley",
+        "extensions": ["pdf", "epub", "mobi", "djvu"],
+        "reading": "publication-format extensions AND publisher/standards-body/edition evidence in the name. The extension guard is load-bearing: an authored nist-800-161-compliance.md is the customer's knowledge ABOUT a standard and must never be mistaken for the standard itself."
+      },
+      "rationale": "ASK, DON'T ASSUME. Downloaded books, standards and course material are reference somebody else wrote, not the customer's knowledge; they are excluded from the DEFAULT and one deliberate act in step 12 re-adds them. This is the only rule whose exclusion is a question rather than a verdict, and the artifact says so rather than letting the UI improvise it. Not a sensitivity rule: a NIST PDF is public.",
+      "cannot_detect": "A publication whose filename carries no publisher, standard number or edition evidence. The known example on the measured drive is a 14.7 MB downloaded enterprise-architecture PDF whose name reads like an authored document: it STAYS in the default under this rule, it is the largest single item there, and that miss — visible at the top of the ledger, one click to remove — is the honest price of refusing to guess from evidence the walk does not have."
+    },
+    {
+      "id": "duplicate_fingerprint",
+      "scope": "corpus",
+      "detection": {
+        "kind": "fingerprint_collapse",
+        "fields": ["name_lower", "size_exact"],
+        "keep": "shallowest_path",
+        "keeper_tie_break": "lexicographic_path_codepoints",
+        "reading": "among candidates STILL STANDING after every other rule and propagation, group on (lowercased name, exact byte size); any group larger than one keeps exactly the member with the fewest path segments — ties broken on the raw path string in codepoint order, an arbitrary but STATED tie so the same corpus keeps the same copy on every run — and subtracts the rest. Judging survivors last is what guarantees every fingerprint keeps one standing copy: collapse before the location rules and a group whose shallowest member sits in a dump tree would keep the copy another rule then removes, and the document would vanish from the default entirely."
+      },
+      "rationale": "Redundancy is the measured drive's real shape: 1,339 duplicate (name, size) groups spanning 4,022 files. Exact size is the honest half of the fingerprint — a \"(1)\" suffix is NOT duplicate evidence on this drive (measured: two statements and their \"(1)\" copies differ threefold in size), so nothing is collapsed on name alone.",
+      "cannot_detect": "A duplicate that was renamed, or re-saved at a different byte size. Content hashing would catch both and requires opening files; this funnel does not."
+    }
+  ],
+  "propagation": {
+    "propagates_scopes": ["document"],
+    "never_propagates_scopes": ["location"],
+    "rule": "When a DOCUMENT-scoped rule subtracts a candidate, the subtraction extends to every fingerprint-identical candidate still standing, attributed as propagated_from:<rule_id> — a receipt is a receipt in every folder it was copied to. A LOCATION-scoped subtraction never propagates: the archived copy of a bank statement is subtracted where it sits and the live original STANDS.",
+    "asymmetry": "The default direction is decided by what each failure costs. A false negative — an exclusion that fails to reach a copy — leaks a bank statement into a selection the customer believed clean. A false positive — an exclusion that over-reaches — loses a recoverable document from a DEFAULT the customer can re-add to in one act. So propagation of document-scoped exclusion is automatic and reported, never asked; and location evidence, which says nothing about the document, is never allowed to reach across fingerprints at all.",
+    "step_12_contract": "This same block governs the subtractive pass: a customer's removal in step 12 is a document-scoped exclusion and propagates by fingerprint under exactly this rule, auto-excluding and reporting. Ticking one copy of a statement must never leave five copies behind — the measured drive holds the same statements in six folders.",
+    "measured_note": "On the 2026-08-14 walk this step subtracts 0 files, and that is expected, not idle: every v1 document-scoped detection reads only fingerprint-invariant evidence (name, extension, size), so copies are caught directly by the same rule. The block is load-bearing for step 12 removals and for any future document rule that reads path evidence; the battery proves the machinery on both edges rather than trusting this note."
+  },
+  "sensitive_shape_rules": {
+    "decision": "JRN-D1 (owner, 2026-08-19): include and report. Everything a customer wants in, goes in — a system you cannot put your tax returns into is a worse Google Drive search. Nothing below subtracts anything.",
+    "subtract": "NEVER",
+    "presentation_rule": "Counts of named shape rules, never a browsable ranked list of paths — a ranked table of those paths on one screen IS the dossier. This is the one thing that survives from the retired survey posture, and it is a rendering rule, not a gate.",
+    "credential_advice": "Live credentials in the selection are a key-hygiene problem, not a privacy one: ROTATE THEM, DON'T EXCLUDE THEM, then ingest freely. Shown as advice beside the selection, defaulted on like everything else, never blocked.",
+    "shared_tenant_note": "On a shared tenant, who else can query what gets ingested is said out loud; on a single-owner tenant the question does not arise and no warning appears.",
+    "population_note": "Counts are over ingestion CANDIDATES and over the DEFAULT SELECTION, both reported, zeros included. They are NOT tree-level counts: the survey note measured name shapes over the whole tree — where the most sensitive names are empty folders that cannot be ingested — under rules that were never written down (JRN-6). Its per-shape figures (40 bank, 111 credential, 14 tax, 3 identity, 9 legal, 7 insurance, 3 pastoral, 6 payroll) stand as tree-level measurements of that day and are NOT comparable to these; neither supersedes the other because they answer different questions. Shapes may overlap — one document can match several — so per-shape counts do not sum.",
+    "shapes": [
+      {
+        "id": "bank_statement_shape",
+        "report": true,
+        "subtract": "NEVER",
+        "detection": { "kind": "name_or_ancestor_regex", "regex": "(^|[^a-z])banks?([^a-z]|$)|wells[ _-]?fargo|(^|[^a-z])statements?([^a-z]|$)|(^|[^a-z])checking([^a-z]|$)|(^|[^a-z])chase([^a-z]|$)" },
+        "rationale": "Statement-shaped names and folders. Known over-match, said out loud: `statement` also fires on a social-security statement and would fire on a mission-statement; a count of shapes is a count of name evidence, not a verdict about content."
+      },
+      {
+        "id": "credential_shape",
+        "report": true,
+        "subtract": "NEVER",
+        "detection": { "kind": "name_or_ancestor_regex", "regex": "client[ _-]?secret|credentials?|(^|[^a-z])passwords?([^a-z]|$)|passwd|(^|[^a-z])secrets?([^a-z]|$)|api[ _-]?keys?|(^|[^a-z])tokens?([^a-z]|$)|^\\.env($|\\.)" },
+        "rationale": "The rotate-don't-exclude shape. On a working engineer's drive most hits are documentation ABOUT credentials, which is exactly why this reports rather than gates. .env files themselves classify as source and never reach this funnel; their disclosure story belongs to the map surface."
+      },
+      {
+        "id": "tax_shape",
+        "report": true,
+        "subtract": "NEVER",
+        "detection": { "kind": "name_or_ancestor_regex", "regex": "(^|[^a-z])tax(es)?([^a-z]|$)|(^|[^a-z])w-?2([^a-z]|$)|(^|[^a-z])1099([^a-z]|$)|(^|[^a-z])1040([^a-z]|$)|turbotax" },
+        "rationale": "Tax filings and folders. Bounded so datastax never matches; a tax document in the default is the point of JRN-D1, and it arrives counted."
+      },
+      {
+        "id": "government_identity_shape",
+        "report": true,
+        "subtract": "NEVER",
+        "detection": { "kind": "name_or_ancestor_regex", "regex": "passport|driver'?s[ _-]?licen[cs]e|birth[ _-]?certificate|social[ _-]?security|(^|[^a-z])ssn([^a-z]|$)|naturalization|green[ _-]?card|bonafide" },
+        "rationale": "Identity documents by name evidence."
+      },
+      {
+        "id": "legal_shape",
+        "report": true,
+        "subtract": "NEVER",
+        "detection": { "kind": "name_or_ancestor_regex", "regex": "divorce|custody|attorney|lawsuit|subpoena|notari[sz]|(^|[^a-z])courts?([^a-z]|$)|power[ _-]?of[ _-]?attorney|(^|[^a-z])leases?([^a-z]|$)|last[ _-]?will" },
+        "rationale": "Deliberately does NOT match the bare word `legal`: a product's legal-pages source tree would light the count up with terms-of-service markdown. A zero here is reported as zero — on the measured drive the legal-shaped names are empty folders and one photograph, none of which are prose candidates."
+      },
+      {
+        "id": "insurance_shape",
+        "report": true,
+        "subtract": "NEVER",
+        "detection": { "kind": "name_or_ancestor_regex", "regex": "insurance|(^|[^a-z])benefits?([^a-z]|$)|401[ -]?k([^a-z]|$)|(^|[^a-z])hsa([^a-z]|$)|medicare|medicaid|(^|[^a-z])dental([^a-z]|$)|deductible" },
+        "rationale": "Insurance and benefits shapes. 401k is spelled with the k so an HTTP 401 troubleshooting note never counts as a retirement plan."
+      },
+      {
+        "id": "pastoral_shape",
+        "report": true,
+        "subtract": "NEVER",
+        "detection": { "kind": "name_or_ancestor_regex", "regex": "church|sermon|(^|[^a-z])pastors?([^a-z]|$)|(^|[^a-z])bible([^a-z]|$)|prayer|ministry|deacon|worship|devotional|theolog" },
+        "rationale": "Pastoral and religious shapes, the survey's own example of names that disclose regardless of content."
+      },
+      {
+        "id": "payroll_shape",
+        "report": true,
+        "subtract": "NEVER",
+        "detection": { "kind": "name_or_ancestor_regex", "regex": "payroll|pay[ _-]?stubs?|pay[ _-]?slips?|(^|[^a-z])wages([^a-z]|$)|direct[ _-]?deposit|(^|[^a-z])salar(y|ies)([^a-z]|$)" },
+        "rationale": "Payroll shapes. A payslip in the default selection is JRN-D1 working as decided, and the count beside it is how the customer knows without being shown a list."
+      }
+    ]
+  },
+  "default_selection": {
+    "definition": "candidates minus every default-on subtraction above, applied in the pinned precedence. Sensitive shapes subtract nothing, ever. The result is a DEFAULT — a proposal the customer subtracts from (one click) and adds back to (one deliberate act) — never a floor, a limit, or a verdict.",
+    "auditability": "Every subtraction is named and counted, files and bytes, and the evaluator refuses to emit a funnel whose rows do not sum exactly to candidates minus default — the arithmetic discipline JRN-7 exists because the design documents lacked."
+  },
+  "precedence": [
+    "archived_dump_copy",
+    "stub_under_200b",
+    "receipt_shape",
+    "machine_output_in_prose",
+    "third_party_publication",
+    "propagation",
+    "duplicate_fingerprint"
+  ],
+  "evaluator": {
+    "reference_implementation": "eval/funnel.py — loads this artifact, re-classifies the walk under the pinned artifact-classes version, applies the rules in precedence order, emits per-item verdicts (selected | subtracted:<rule_id> | subtracted:propagated_from:<rule_id>, plus reported shape ids) and the named-and-counted funnel table.",
+    "equivalence_fixture": "eval/fixtures/funnel-equivalence.v1.jsonl — hand-authored from THIS text before the evaluator was consulted, consumed by eval/tests/test_funnel.py under a pinned SHA-256; the TypeScript port (34-S11b) vendors the identical file under the identical pin, so the two implementations can only drift loudly.",
+    "attribution": "First matching rule in precedence order wins; a candidate is subtracted exactly once, by a named rule."
+  },
+  "open_gates": [
+    "FP-1: CLOSED 2026-08-20. Validator and mutation battery exist: aks-poc/scripts/validate-funnel-policy.sh (pinned expectations in the script, never read from this file; --selftest mutation battery), dispatched from validate-graph-artifacts.sh, plus eval/tests/test_funnel.py — every rule removable and each removal caught by a specifically named test, the JRN-D1 schema pin (a subtracting sensitive rule refuses to load), propagation asymmetry on both edges, shallowest-path-kept with its tie-break, and the 199/200/201 boundary.",
+    "FP-2: CLOSED 2026-08-20 — MEASURED AGAINST THE REAL WALK, and this measurement is canonical. Command: `python3.12 eval/funnel.py ~/onedrive-full.jsonl` against the 2026-08-14 walk (sha256 1cd1fbf0b18dfdce02397316c9eac9b6c08f64bc248cee09e843ac998eea61fa, 15,657 records, 8,188 files), re-classified under artifact-classes 1.0.0-rc2. Candidates 1,983 files / 163,895,413 B. Subtractions: archived_dump_copy 180 / 86,825,158 B; stub_under_200b 40 / 3,318 B; receipt_shape 4 / 8,700,572 B; machine_output_in_prose 2 / 89,628 B; third_party_publication 7 / 20,726,543 B; propagation 0 / 0 B; duplicate_fingerprint 645 / 5,843,293 B. DEFAULT SELECTION 1,105 files / 41,706,901 B (13.5% of 8,188 files, 41.7 MB). Sensitive shapes (candidates / in default): bank_statement_shape 33/6, credential_shape 33/24, tax_shape 13/13, government_identity_shape 4/2, legal_shape 0/0, insurance_shape 0/0, pastoral_shape 1/1, payroll_shape 2/2 — all included, none subtracted. THIS RESOLVES JRN-7: the journey table's 1,062 total and its own 1,061 row-sum were both written before any evaluator existed and could not both be right; the measured 1,105 supersedes BOTH (they also predate rc2, which moved 5 files into the candidate pool). The old figures are retired with this provenance, not silently replaced. The bulk of the file-count movement against the old table is attribution the old design could not audit: it subtracted 348 dump copies under rules written down nowhere, while this artifact's honest path-evidence rule reaches 180 and hands the rest to duplicate_fingerprint (645 against the old 516) — plus the byte difference is dominated by one 14.7 MB publication miss this artifact documents in third_party_publication.cannot_detect rather than hides.",
+    "FP-3: OPEN — HUMAN AGREEMENT UNMEASURED. Nobody has measured whether a human owner agrees with these subtractions or these shape counts: the receipt/publication/machine-output patterns and all eight shape regexes over-match and under-match in ways only a per-item human pass can quantify (the known cases are written in each rule's cannot_detect and rationale, but known cases are not a rate). Until a human-agreement pass runs on a real drive, no claim that the default selection is GOOD is supportable — the funnel is auditable, which is a different property. Same discipline as selection-policy's AC-S2: run it, report it, and only then say it works."
+  ]
+}

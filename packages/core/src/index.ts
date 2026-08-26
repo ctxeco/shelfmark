@@ -1,3 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
-// @shelfmark/core — populated by the port phases; see the extraction plan.
-export const SHELFMARK_PACKAGE = 'core';
+// @shelfmark/core — public surface; populated by the port phases.
+export * from './tokenCrypto.js';
+export * from './costEstimate.js';
+export * from './consent/disclosures.js';
+export * from './consent/store.js';

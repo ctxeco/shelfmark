@@ -24,7 +24,7 @@ Etiquette:
 - `contoso.sharepoint.com` (Microsoft's official sample tenant) is fine and
   preferred for SharePoint fixtures.
 - Plan-key references in comments (`JRN-8`, `34-S09c`, …) are deliberate —
-  they resolve in `docs/DESIGN-HISTORY.md`. Don't "clean them up".
+  they resolve in `docs/project/design-history.md`. Don't "clean them up".
 
 ## The no-weight-tuning rule
 

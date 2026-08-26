@@ -172,7 +172,7 @@ export function buildPorts(config: DemoConfig): ShelfmarkPorts {
     // gateway validated) into { tenantId, sub } per the AuthContextResolver
     // contract in @shelfmark/core's ports.ts, returning null for anything
     // unauthenticated so the API answers 401. The OAuth callback carve-out
-    // (docs/SETUP.md §6) is already handled inside @shelfmark/api.
+    // (docs/getting-started/entra-setup.md §6) is already handled inside @shelfmark/api.
     resolveAuth: async () => {
       const ctx: AuthContext = { tenantId: 'demo', sub: 'demo-user', upn: 'demo-user@demo.example' };
       return ctx;

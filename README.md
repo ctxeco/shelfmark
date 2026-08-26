@@ -12,7 +12,7 @@ text stored verbatim in every consent record.
 
 > **Project status: best-effort.** Extracted from a production system and
 > maintained as time allows. Issues and PRs welcome; no support SLA. The
-> [design history](docs/DESIGN-HISTORY.md) — including the measured negative
+> [design history](docs/project/design-history.md) — including the measured negative
 > results — is the most transferable thing in the repo.
 
 ## Packages
@@ -37,7 +37,7 @@ a searchable local text corpus; a RAG pipeline is just another sink.
 ```bash
 git clone https://github.com/ctxeco/shelfmark && cd shelfmark
 pnpm install && pnpm build && pnpm test
-# then: docs/SETUP.md — Entra app registration (~30 min) — and demo/
+# then: docs/getting-started/entra-setup.md — Entra app registration (~30 min) — and demo/
 ```
 
 ## What this claims, and what it doesn't
@@ -61,7 +61,7 @@ than discovered.
   policy loader structurally refuses a holdback rule.
 - Read-only: no write scope is requested and no write call exists.
 
-**Not claimed** (details in [KNOWN-LIMITATIONS](docs/KNOWN-LIMITATIONS.md)):
+**Not claimed** (details in [KNOWN-LIMITATIONS](docs/project/known-limitations.md)):
 the ranking's weights carry proven signal (they don't — random weights
 reproduce 77% of the top-100 vs the declared 81%); a measured classifier error
 rate; provider timestamps meaning authorship; streaming ingest; that any of

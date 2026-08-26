@@ -3,7 +3,7 @@
 // computed from the default selection's extensions. Deterministic arithmetic,
 // no model call, and honest about what it cannot know: `bytes ÷ 4` is
 // defensible for plain text and nearly meaningless for a .docx (the plan's
-// own words — 34-S13b, resolved in docs/DESIGN-HISTORY.md), so binary
+// own words — 34-S13b, resolved in docs/project/design-history.md), so binary
 // formats get a RANGE with a stated multiplier pair, the binary share is
 // named, and the method string spells out the arithmetic so the UI renders a
 // range with its provenance instead of a fake single number. Reconciliation

@@ -66,14 +66,14 @@ import {
  * else in this repo would notice.
  */
 const PINNED: Record<string, string> = {
-  'map_metadata.v1|en': '1a889e2d3b4f416d0b014e3490bded9554257ff8c6f457c917ee325920fa270b',
-  'map_metadata.v1|es-MX': '5a4dfbef8fb394c0989d96152676d50b45dba1c068a9d57ba74aaa5fe02c3494',
-  'ingest_content.v1|en': '645b8d6e018cd2a9923f4b5734cd803d8e33007eaf94bf8be9eb5815f1789643',
-  'ingest_content.v1|es-MX': '4ec3f6a7a36e0a89c5a18b5e6cb9aac19bc11ee77644a54b5d17491fea484240',
+  'map_metadata.v1|en': '145e3d7b326816dcbaf500c3056ade36e001fab34f5c1c52196f7e70d4838025',
+  'map_metadata.v1|es-MX': 'b2b6ff9f62fa7bf25aaba5cf9bdb9d0ed8c5ebd6f497f4176e9146e7b2320c65',
+  'ingest_content.v1|en': '90ebf79b000b75f63b9929c12fcee062c081e1186865bdb180a78aeadadba8ae',
+  'ingest_content.v1|es-MX': '1dfe22af5ba410a7723170aa9e32f7865d189003614d16d59e49856c217c555b',
 };
 
 /** SHA-256 of the vendored manifest itself — one hash covering the whole set. */
-const PINNED_MANIFEST_SHA = '160ee86be4d89b0717632f049aecde111bef219b3b09d427a0ae0ae34860491d';
+const PINNED_MANIFEST_SHA = '6951541a6eecef64768265e7cb6f9380b7bea13bf3cf30abe61098d26ae8e234';
 
 const manifestPath = join(VENDORED_CONSENT_DIR, 'disclosures.manifest.json');
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
@@ -484,9 +484,9 @@ const REQUIRED: Readonly<Record<ConsentScope, readonly Requirement[]>> = {
     {
       requirement: 'promises we never create, change, move or DELETE a user file',
       phrases: {
-        en: 'ctxEco does not create, rename, move, overwrite or delete anything in your storage while mapping. It never deletes one of your files',
+        en: 'this service does not create, rename, move, overwrite or delete anything in your storage while mapping. It never deletes one of your files',
         'es-MX':
-          'ctxEco no crea, no renombra, no mueve, no sobrescribe ni elimina nada en su almacenamiento mientras mapea. Nunca elimina un archivo suyo',
+          'este servicio no crea, no renombra, no mueve, no sobrescribe ni elimina nada en su almacenamiento mientras mapea. Nunca elimina un archivo suyo',
       },
     },
     {
@@ -547,9 +547,9 @@ const REQUIRED: Readonly<Record<ConsentScope, readonly Requirement[]>> = {
     {
       requirement: 'promises we never create, change, move or DELETE a user file',
       phrases: {
-        en: 'ctxEco does not create, rename, move, overwrite or delete anything in your storage. **It never deletes one of your files',
+        en: 'this service does not create, rename, move, overwrite or delete anything in your storage. **It never deletes one of your files',
         'es-MX':
-          'ctxEco no crea, no renombra, no mueve, no sobrescribe ni elimina nada en su almacenamiento. **Nunca elimina un archivo suyo',
+          'este servicio no crea, no renombra, no mueve, no sobrescribe ni elimina nada en su almacenamiento. **Nunca elimina un archivo suyo',
       },
     },
     {

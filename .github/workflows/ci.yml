@@ -22,6 +22,8 @@ jobs:
         run: ./scripts/sanitize-check.sh
       - name: Hygiene gate
         run: ./scripts/hygiene-check.sh
+      - name: Consent pin gate
+        run: ./scripts/consent-pin-check.sh
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2
         env:

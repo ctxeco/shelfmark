@@ -1,3 +1,110 @@
 // SPDX-License-Identifier: Apache-2.0
-// @shelfmark/ui — populated by the port phases; see the extraction plan.
-export const SHELFMARK_PACKAGE = 'ui';
+// @shelfmark/ui — the three screens of the map-then-decide-then-read flow,
+// wired to a host through <ShelfmarkProvider> and nothing else.
+
+export {
+  ShelfmarkProvider,
+  useShelfmark,
+  useReducedMotion,
+  labelDisplay,
+  apiUrl,
+  DEFAULT_COST_MODEL,
+  type ShelfmarkConfig,
+  type ResolvedShelfmarkConfig,
+  type ShelfmarkTransport,
+  type ShelfmarkRoutes,
+  type ShelfmarkLabel,
+  type ShelfmarkCostModel,
+  type ShelfmarkProviderId,
+  type PickedScope,
+} from './provider.js';
+
+export {
+  Connections,
+  BrowsePickerBody,
+  browseView,
+  browseFailureMessage,
+  completionTone,
+  type ConnectionsProps,
+  type Connection,
+  type CompletionTone,
+  type BrowseItem,
+  type BrowseErrorState,
+  type BrowseView,
+  type BrowseViewInput,
+  type BrowseRecovery,
+} from './Connections/index.js';
+
+export {
+  DriveMap,
+  MapLandedStage,
+  MAP_STREAM_TUNING,
+  MAP_LANDING_TUNING,
+  MAP_LEDGER_TUNING,
+  VISIBLE_LINE_CAP,
+  COST_MIRROR_OF,
+  stageForRunResolution,
+  computeInversion,
+  computeFindings,
+  landingAggregates,
+  landingReconciliation,
+  parseSuggestions,
+  parseVerdict,
+  funnelReconciliation,
+  selectionTotals,
+  isRowSelected,
+  fmtBytes,
+  type DriveMapProps,
+  type MapRunDoc,
+  type MapRunStatus,
+  type MapRunProgress,
+  type MapNarrationLine,
+  type MapFlowStage,
+  type InversionModel,
+  type InversionClassRow,
+  type LandingFinding,
+  type LandingFindingId,
+  type FunnelTableRow,
+  type SensitiveCounts,
+  type SuggestionRow,
+  type SuggestionsPayload,
+  type IngestCostEstimate,
+  type RowVerdict,
+  type FunnelReconciliation,
+  type SelectionEdits,
+  type SelectionTotals,
+  type DecisionSnapshot,
+} from './DriveMap/index.js';
+
+export {
+  IngestPanel,
+  OutcomeReasons,
+  connectorActivity,
+  isConnectorActive,
+  normalizeIngestProgress,
+  ingestDenominator,
+  ingestView,
+  outcomeGroups,
+  fileOutcomeStyle,
+  orderedFolders,
+  INGEST_RUN_STATUSES,
+  FILE_OUTCOME_STYLE,
+  MAX_FOLDER_ROWS,
+  type IngestPanelProps,
+  type IngestProgress,
+  type IngestFolderProgress,
+  type IngestRunStatus,
+  type IngestView,
+  type IngestDenominator,
+  type ConnectorActivity,
+  type ConnectorActivityInput,
+  type OutcomeCounts,
+  type OutcomeGroup,
+  type OutcomeRecovery,
+  type FileOutcomeStatus,
+} from './IngestStatus/index.js';
+
+export { t, getLocale, setLocale, assertLocaleParity, en, esMX } from './i18n/index.js';
+export type { LocaleCode, MessageKey, MessageDict } from './i18n/index.js';
+
+export { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion.js';

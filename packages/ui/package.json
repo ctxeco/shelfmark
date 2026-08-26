@@ -19,7 +19,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "node scripts/check-parity.mjs && tsup src/index.ts src/test-setup.ts --format esm --dts --sourcemap && cp src/styles.css dist/ 2>/dev/null || true",
+    "build": "node scripts/check-parity.mjs && tsup src/index.ts src/test-setup.ts src/tailwind-preset.ts --format esm --dts --sourcemap && cp src/styles.css dist/ 2>/dev/null || true",
     "test": "vitest run --passWithNoTests"
   },
   "peerDependencies": {

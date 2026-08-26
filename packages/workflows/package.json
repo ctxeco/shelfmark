@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
   },
   "dependencies": {
     "@shelfmark/core": "workspace:*",
@@ -37,7 +37,9 @@
   },
   "devDependencies": {
     "@temporalio/testing": "^1.11.0",
-    "@temporalio/worker": "^1.11.0"
+    "@temporalio/worker": "^1.11.0",
+    "@types/node": "^26.3.0",
+    "axios": "^1.7.0"
   },
   "engines": {
     "node": ">=20"

@@ -1,0 +1,177 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* @shelfmark/ui — the CSS-variable ramps and component classes the three
+ * screens depend on. Ship this file (or its dist copy) alongside the
+ * tailwind preset: the preset's colors read these variables. */
+
+/* The CSS-variable layer the tailwind preset's `theme.extend.colors`
+ * reads from. `:root` (dark) is byte-identical to
+ * Tailwind's real default palette values, so a dark-first app adopting
+ * this file is a no-op by construction; `:root[data-theme='light']`
+ * substitutes readability-matched light-mode values (contrast computed
+ * against the screens' actual text/background pairs, not a naive invert —
+ * measured, not assumed). `data-theme` is set on <html> by the
+ * HOST (before React exists, to avoid a flash) — never toggled via a
+ * class, so it composes with the preset's `light:` variant using an
+ * attribute selector rather than a class one. */
+:root {
+  --color-slate-50: 248 250 252;
+  --color-slate-100: 241 245 249;
+  --color-slate-200: 226 232 240;
+  --color-slate-300: 203 213 225;
+  --color-slate-400: 148 163 184;
+  --color-slate-500: 100 116 139;
+  --color-slate-600: 71 85 105;
+  --color-slate-700: 51 65 85;
+  --color-slate-800: 30 41 59;
+  --color-slate-900: 15 23 42;
+  --color-slate-950: 2 6 23;
+
+  --color-blue-400: 96 165 250;
+  --color-emerald-400: 52 211 153;
+  --color-rose-400: 251 113 133;
+  --color-amber-400: 251 191 36;
+  --color-violet-300: 196 181 253;
+  --color-violet-400: 167 139 250;
+  --color-sky-400: 56 189 248;
+
+  /* Tailwind's real default -950 for each hue — badges like
+   * `bg-emerald-950/40` keep their dark-theme appearance unchanged. */
+  --color-blue-950: 23 37 84;
+  --color-emerald-950: 2 44 34;
+  --color-rose-950: 76 5 25;
+  --color-amber-950: 69 26 3;
+  --color-violet-950: 46 16 101;
+
+  --color-overlay: 255 255 255;
+}
+
+:root[data-theme='light'] {
+  --color-slate-50: 2 6 23;
+  --color-slate-100: 15 23 42;
+  --color-slate-200: 30 41 59;
+  --color-slate-300: 51 65 85;
+  --color-slate-400: 71 85 105;
+  --color-slate-500: 100 116 139;
+  --color-slate-600: 203 213 225;
+  --color-slate-700: 226 232 240;
+  --color-slate-800: 241 245 249;
+  --color-slate-900: 248 250 252;
+  --color-slate-950: 255 255 255;
+
+  /* Darker versions of the same hues — the dark-tuned shades above compute
+   * to ~1.5-2.7:1 contrast on white as text; these land around 6-7:1. */
+  --color-blue-400: 37 99 235;
+  --color-emerald-400: 4 120 87;
+  --color-rose-400: 190 18 60;
+  --color-amber-400: 180 83 9;
+  --color-violet-300: 109 40 217;
+  --color-violet-400: 91 33 182;
+  --color-sky-400: 3 105 161;
+
+  /* Pale tints of the same hue (~Tailwind's own -100 shade) — paired with
+   * the darkened -400 text above, every `bg-{hue}-950/NN text-{hue}-400`
+   * badge (a shape these screens use in ~25 places) becomes a
+   * normal light "status pill" instead of the ~2.3:1 an unmapped dark -950
+   * badge composited with a light page — confirmed live, not assumed. */
+  --color-blue-950: 219 234 254;
+  --color-emerald-950: 209 250 229;
+  --color-rose-950: 255 228 230;
+  --color-amber-950: 254 243 199;
+  --color-violet-950: 237 233 254;
+
+  --color-overlay: 2 6 23;
+}
+
+
+/* Plan 34-S09 — the app's FIRST custom @keyframes, and the precedent for
+ * every one after it: define the keyframes once here, give the utility
+ * class a baked-in `prefers-reduced-motion` override so no call site can
+ * forget it (never rely on remembering a `motion-reduce:` modifier at each
+ * usage), and keep it short (~a third of a second). The other half of the
+ * same precedent — JS-driven motion that a media query cannot reach — is
+ * hooks/usePrefersReducedMotion.ts.Used by the map narration stream's
+ * line reveals; reusable by anything after it. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-rise-in {
+  animation: rise-in 340ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise-in {
+    animation: none;
+  }
+}
+
+/* Plan 34-S10d — the map landing's fill vocabulary. Every treatment here is
+ * paired with a text label at the call site (the absence table, the legend):
+ * fills DISTINGUISH states at a glance but never carry a state alone.
+ *
+ * .map-morph is the JS half's CSS: the inversion's 900 ms two-bar morph.
+ * The duration is set inline from MAP_LANDING_TUNING (single source in TS);
+ * this class carries the property + easing, and the baked-in reduced-motion
+ * override kills it even if a call site forgets the usePrefersReducedMotion
+ * branch (same defense-in-depth as .animate-rise-in above). */
+.map-morph {
+  transition-property: width;
+  transition-timing-function: ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-morph {
+    transition-property: none;
+  }
+}
+/* Sub-pixel floor: a segment too small to draw honestly gets this hatch over
+ * its class colour, plus a floored width and a "not to scale" label. */
+.map-hatch {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgb(255 255 255 / 0.45) 0 2px,
+    transparent 2px 6px
+  );
+}
+/* unclassified — the classifier's own staleness signal: muted, coarse hatch. */
+.map-fill-unclassified {
+  background-color: rgb(71 85 105);
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgb(2 6 23 / 0.5) 0 3px,
+    transparent 3px 8px
+  );
+}
+/* opaque containers — sealed vertical bars: present, contents unknowable. */
+.map-fill-opaque {
+  background-color: rgb(124 58 237);
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgb(2 6 23 / 0.45) 0 3px,
+    transparent 3px 7px
+  );
+}
+/* pruned — deliberately not walked: broad diagonal stripes, no class colour. */
+.map-fill-pruned {
+  background-color: rgb(30 41 59);
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgb(148 163 184 / 0.5) 0 4px,
+    transparent 4px 10px
+  );
+}
+/* not reached — a gap, not a thing: outline only, nothing filled in. */
+.map-fill-notreached {
+  border: 1px dashed rgb(148 163 184 / 0.6);
+  background: transparent;
+}
+/* empty folders — undrawable at any honest width: a dotted void. */
+.map-fill-empty {
+  border: 1px dotted rgb(100 116 139 / 0.7);
+  background: transparent;
+}
+

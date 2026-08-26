@@ -140,6 +140,12 @@ importers:
       '@temporalio/worker':
         specifier: ^1.11.0
         version: 1.23.0(esbuild@0.27.7)(postcss@8.5.26)
+      '@types/node':
+        specifier: ^26.3.0
+        version: 26.3.0
+      axios:
+        specifier: ^1.7.0
+        version: 1.20.0
 
 packages:
 

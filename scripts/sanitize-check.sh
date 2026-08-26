@@ -14,8 +14,12 @@ cd "$ROOT"
 
 # Files the scanner must not scan: itself, the allowlist, git internals, deps.
 EXCLUDES=(--exclude-dir=node_modules --exclude-dir=.git --exclude-dir=dist
-          --exclude-dir=.turbo --exclude-dir=coverage
-          --exclude=sanitize-check.sh --exclude=.sanitize-allowlist)
+          --exclude-dir=.turbo --exclude-dir=coverage --exclude-dir=data
+          --exclude=sanitize-check.sh --exclude=.sanitize-allowlist
+          --exclude=.env)
+# .env is gitignored and holds a developer's real local credentials — it can
+# never reach the repo, so the gate skips it (a local run must not read as a
+# leak). .env.example IS committed and IS scanned.
 
 fail=0
 

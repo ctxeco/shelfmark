@@ -1,0 +1,73 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# shelfmark demo stack: Temporal dev server (+ UI on :8233), MongoDB, the
+# demo API server (:8787, serves the built web app) and the Temporal worker.
+#
+#   cp .env.example .env   # fill in the CONNECTOR_* values
+#   docker compose up --build
+#
+# With PUBLIC_BASE_URL=http://localhost:8787 the Entra redirect URI to
+# register is  http://localhost:8787/api/v1/connectors/microsoft/callback
+# (run `pnpm doctor` — it prints the exact string for your .env).
+#
+# Images are pinned by multi-arch index digest (resolved 2026-08-26 via
+# `docker buildx imagetools inspect`); bump deliberately, never implicitly.
+services:
+  temporal:
+    image: temporalio/temporal:latest@sha256:cf86707827fac99e4d1c4a47dc11b105382d796199c7bd41fb3213fb0471628e
+    command: ["server", "start-dev", "--ip", "0.0.0.0", "--ui-port", "8233", "--db-filename", "/data/temporal.db"]
+    ports:
+      - "7233:7233" # gRPC — also reachable from the host for `pnpm dev`
+      - "8233:8233" # Temporal Web UI
+    volumes:
+      - ./data/temporal:/data
+
+  mongo:
+    image: mongo:7@sha256:b6421fd6d1c5ded6377b397d8983e2f82e2100dc5123332dcfda2065a472be5b
+    ports:
+      - "27017:27017" # exposed so `pnpm dev` on the host can share the db
+    volumes:
+      - ./data/mongo:/data/db
+
+  app:
+    build:
+      context: ..
+      dockerfile: demo/Dockerfile
+    image: shelfmark-demo
+    command: ["node", "dist/server.js"]
+    ports:
+      - "8787:8787"
+    env_file:
+      - path: ./.env
+        required: false # compose env below still applies without a .env
+    environment:
+      MONGODB_URI: mongodb://mongo:27017
+      TEMPORAL_ADDRESS: temporal:7233
+      PORT: "8787"
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8787}
+      DEMO_DATA_DIR: /app/demo/data
+    volumes:
+      - ./data:/app/demo/data
+    depends_on:
+      - mongo
+      - temporal
+
+  worker:
+    image: shelfmark-demo
+    build:
+      context: ..
+      dockerfile: demo/Dockerfile
+    command: ["node", "dist/worker.js"]
+    env_file:
+      - path: ./.env
+        required: false
+    environment:
+      MONGODB_URI: mongodb://mongo:27017
+      TEMPORAL_ADDRESS: temporal:7233
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8787}
+      DEMO_DATA_DIR: /app/demo/data
+    volumes:
+      - ./data:/app/demo/data
+    depends_on:
+      - mongo
+      - temporal

@@ -1,0 +1,11 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Demo shell styles. @shelfmark/ui/styles.css (imported in main.tsx)
+ * provides the CSS-variable ramps; dark is the default posture — no
+ * data-theme attribute needed. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-slate-950 text-slate-200 antialiased;
+}

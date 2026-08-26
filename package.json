@@ -13,7 +13,9 @@
     "lint": "turbo run lint",
     "sanitize": "scripts/sanitize-check.sh",
     "hygiene": "scripts/hygiene-check.sh",
-    "check": "pnpm sanitize && pnpm hygiene && pnpm build && pnpm test"
+    "check": "pnpm sanitize && pnpm hygiene && pnpm build && pnpm test",
+    "demo:doctor": "pnpm -C demo doctor",
+    "demo:dev": "pnpm -C demo dev"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0",

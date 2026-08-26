@@ -1,0 +1,25 @@
+{
+  "name": "shelfmark-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "sanitize": "scripts/sanitize-check.sh",
+    "hygiene": "scripts/hygiene-check.sh",
+    "check": "pnpm sanitize && pnpm hygiene && pnpm build && pnpm test"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0",
+    "turbo": "^2.3.0",
+    "typescript": "^5.5.3",
+    "vitest": "^4.1.0",
+    "tsup": "^8.3.0"
+  }
+}

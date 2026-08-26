@@ -1,0 +1,38 @@
+name: Image scan (Trivy)
+# Ported from the internal reusable Trivy template; renamed, action pinned to a
+# release SHA (the internal copy used @master — the exact mutable-ref pattern
+# its sibling Semgrep template carried an exclusion to tolerate).
+on:
+  pull_request:
+    paths: ["demo/Dockerfile*", "demo/compose*", ".github/workflows/trivy.yml"]
+  push:
+    branches: [main]
+    paths: ["demo/Dockerfile*"]
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Build demo image
+        run: |
+          if [ -f demo/Dockerfile ]; then docker build -t shelfmark-demo:ci -f demo/Dockerfile .; else echo "no demo/Dockerfile yet"; exit 0; fi
+      - name: Trivy scan
+        if: hashFiles('demo/Dockerfile') != ''
+        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
+        with:
+          image-ref: shelfmark-demo:ci
+          format: sarif
+          output: trivy.sarif
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+      - uses: github/codeql-action/upload-sarif@6f5948dfacef28e207b48d0905cf90c03365536d # v3
+        if: hashFiles('demo/Dockerfile') != ''
+        with:
+          sarif_file: trivy.sarif

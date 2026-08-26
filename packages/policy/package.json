@@ -1,0 +1,20 @@
+{
+  "name": "@shelfmark/policy",
+  "version": "0.0.0",
+  "description": "Zero-dependency drive-artifact classification, funnel policy, and ingest filters — rules as versioned data",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "require": "./dist/index.cjs" },
+    "./vendor/*": "./vendor/*"
+  },
+  "files": ["dist", "vendor"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap",
+    "test": "vitest run"
+  },
+  "engines": { "node": ">=20" }
+}

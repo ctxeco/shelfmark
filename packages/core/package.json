@@ -1,0 +1,21 @@
+{
+  "name": "@shelfmark/core",
+  "version": "0.0.0",
+  "description": "Domain types, the ports (DocumentSink, EgressGate, LabelPolicy, AuthContext, TenantPolicy), consent engine with SHA-pinned disclosures, cost estimate, token crypto, and the Mongo store",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "require": "./dist/index.cjs" },
+    "./vendor/*": "./vendor/*"
+  },
+  "files": ["dist", "vendor"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap",
+    "test": "vitest run"
+  },
+  "dependencies": { "mongodb": "^7.4.0" },
+  "engines": { "node": ">=20" }
+}

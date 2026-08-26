@@ -1,0 +1,13 @@
+{
+  "name": "shelfmark-demo",
+  "private": true,
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "description": "Runnable end-to-end demo: Entra OAuth, map, select, ingest to a local searchable corpus via FsDocumentSink",
+  "type": "module",
+  "scripts": {
+    "build": "echo demo-build-TBD-P7",
+    "test": "echo no-demo-tests"
+  },
+  "engines": { "node": ">=20" }
+}

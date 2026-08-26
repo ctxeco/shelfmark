@@ -1,3 +1,9 @@
+---
+title: Known limitations
+parent: Project
+nav_order: 2
+---
+
 # Known limitations
 
 Stated because the alternative is you finding them later and trusting the rest

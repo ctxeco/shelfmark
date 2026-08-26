@@ -1,0 +1,58 @@
+title: shelfmark
+description: >-
+  Map a drive before you copy it. Ingest only what was chosen.
+  Metadata-first mapping, consent-scoped walks, and selective ingest for
+  OneDrive and SharePoint.
+url: https://ctxeco.github.io
+baseurl: /shelfmark
+
+remote_theme: just-the-docs/just-the-docs@v0.12.0
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+  # Rewrites [text](page.md) links to real URLs, so every link works BOTH
+  # when browsing the repo on GitHub and on the published site.
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: false
+
+# just-the-docs
+search_enabled: true
+search:
+  heading_level: 3
+  previews: 3
+  rel_url: true
+heading_anchors: true
+color_scheme: dark
+
+aux_links:
+  "GitHub":
+    - "https://github.com/ctxeco/shelfmark"
+aux_links_new_tab: true
+
+nav_external_links:
+  - title: Source on GitHub
+    url: https://github.com/ctxeco/shelfmark
+
+back_to_top: true
+back_to_top_text: "Back to top"
+
+footer_content: >-
+  Apache-2.0. Extracted from a production system and maintained best-effort.
+
+last_edit_timestamp: true
+last_edit_time_format: "%b %e %Y"
+gh_edit_link: true
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: "https://github.com/ctxeco/shelfmark"
+gh_edit_branch: "main"
+gh_edit_source: docs
+gh_edit_view_mode: "tree"
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor

@@ -1,4 +1,10 @@
-# Setup: Entra app registration and secrets
+---
+title: Entra app setup
+parent: Getting started
+nav_order: 2
+---
+
+# Entra app setup
 
 Time to first map: ~30 minutes, most of it in the Entra portal. The demo's
 `pnpm demo:doctor` checks every step below and prints exactly what is wrong.

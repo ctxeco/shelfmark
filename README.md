@@ -67,12 +67,23 @@ reproduce 77% of the top-100 vs the declared 81%); a measured classifier error
 rate; provider timestamps meaning authorship; streaming ingest; that any of
 the measurements generalize beyond the one corpus they were made on.
 
-## Docs
+## Documentation
 
-[SETUP](docs/SETUP.md) · [KNOWN-LIMITATIONS](docs/KNOWN-LIMITATIONS.md) ·
-[DESIGN-HISTORY](docs/DESIGN-HISTORY.md) ·
-[CONSENT-GOVERNANCE](docs/CONSENT-GOVERNANCE.md) · [I18N](docs/I18N.md) ·
-[CONTRIBUTING](CONTRIBUTING.md) · [SECURITY](SECURITY.md)
+**📖 [ctxeco.github.io/shelfmark](https://ctxeco.github.io/shelfmark)** — the
+full documentation site: getting started, concepts, integration guides, and
+reference.
+
+Jump straight to:
+[Entra app setup](docs/getting-started/entra-setup.md) ·
+[Running the demo](docs/getting-started/running-the-demo.md) ·
+[The five ports](docs/concepts/the-ports.md) ·
+[Implementing a DocumentSink](docs/guides/document-sink.md) ·
+[HTTP API](docs/reference/http-api.md) ·
+[Known limitations](docs/project/known-limitations.md) ·
+[Design history](docs/project/design-history.md)
+
+[CONTRIBUTING](CONTRIBUTING.md) · [SECURITY](SECURITY.md) ·
+[CODE_OF_CONDUCT](CODE_OF_CONDUCT.md)
 
 ## License
 

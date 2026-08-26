@@ -1,4 +1,10 @@
-# Consent disclosure governance
+---
+title: Consent governance
+parent: Project
+nav_order: 3
+---
+
+# Consent governance
 
 `consent/` at the repo root holds **one** body of legally-operative consent
 copy. Every package that shows it, or hashes it into a stored consent record,

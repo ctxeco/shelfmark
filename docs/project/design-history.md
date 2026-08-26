@@ -1,3 +1,9 @@
+---
+title: Design history
+parent: Project
+nav_order: 1
+---
+
 # Design history
 
 shelfmark was extracted from a production multi-tenant AI platform, where it

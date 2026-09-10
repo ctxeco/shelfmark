@@ -9,9 +9,15 @@ name: Image scan (Trivy)
 on:
   pull_request:
     paths: ["demo/Dockerfile*", "demo/compose*", ".github/workflows/trivy.yml"]
+  # A change to this workflow re-scans main, as it already re-scans a PR.
+  # Without it, merging a fix to the scan itself left main's last result —
+  # produced by the old scanner — standing until the Dockerfile next changed.
   push:
     branches: [main]
-    paths: ["demo/Dockerfile*"]
+    paths: ["demo/Dockerfile*", ".github/workflows/trivy.yml"]
+  # On-demand scan of main: new base-image CVEs are published without any
+  # commit here to trigger a scan.
+  workflow_dispatch:
 
 permissions:
   contents: read

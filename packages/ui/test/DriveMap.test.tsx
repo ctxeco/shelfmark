@@ -669,7 +669,11 @@ describe('DriveMap — the reasoning stream (34-S09)', () => {
       s1.frame({ type: 'narration', line: nl(`cap line ${String(n).padStart(2, '0')}`, n) });
     }
 
-    await waitFor(() => expect(screen.getByText('cap line 45')).toBeInTheDocument());
+    // 45 frames through the reveal loop is 45 timer turns and renders; on
+    // shared CI runners that measured 908–1088 ms against waitFor's 1000 ms
+    // default, so the gate went red on runner speed alone. The budget is for
+    // the runner — every assertion below is unchanged.
+    await waitFor(() => expect(screen.getByText('cap line 45')).toBeInTheDocument(), { timeout: 5000 });
     expect(screen.getByText(/Showing the last 40 of 45 lines/)).toBeInTheDocument();
     // Oldest five rolled off; the 6th is the oldest still visible.
     expect(screen.queryByText('cap line 01')).not.toBeInTheDocument();

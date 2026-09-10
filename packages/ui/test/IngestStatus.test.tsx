@@ -596,7 +596,11 @@ describe('the ingest view state is exhaustive [structural]', () => {
     expect(higher.done).toBe(9);
   });
 
-  it('renders something TRUE for every reachable combination of inputs', () => {
+  // 768 full renders under jsdom: measured at 2.0–3.8 s on shared CI runners
+  // and 6.6 s on a contended one, against vitest's 5 s default. The budget is
+  // stated rather than left to the default; every combination is still
+  // rendered and checked.
+  it('renders something TRUE for every reachable combination of inputs', { timeout: 30_000 }, () => {
     const seen = new Set<string>();
     let combinations = 0;
 

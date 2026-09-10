@@ -11,7 +11,7 @@ blockExoticSubdeps: true
 trustPolicy: no-downgrade
 # trustPolicy judges trust by publish DATE, not semver: a release published
 # without the provenance an earlier release carried is refused as a possible
-# takeover. These four locked versions trip exactly that — each published by
+# takeover. These three locked versions trip exactly that — each published by
 # the package's own maintainers — and were audited before being exempted
 # (2026-09-10): lockfile integrity matches the registry, no install-time
 # scripts, and the code diff against the previous release on the same line is
@@ -20,11 +20,9 @@ trustPolicy: no-downgrade
 #   pdf-parse@1.1.4      drops a debug-mode file read and `debugger`
 #                        statements; bundled pdf.js byte-identical (demo)
 #   semver@6.3.1         the ReDoS-hardening release (via Babel, dev)
-#   undici-types@6.21.0  type-definition additions only (via @types/node, dev)
 # Entries are exact versions, so every other version of these packages is
 # still checked. Delete an entry once the lockfile no longer resolves it.
 trustPolicyExclude:
   - "chokidar@4.0.3"
   - "pdf-parse@1.1.4"
   - "semver@6.3.1"
-  - "undici-types@6.21.0"

@@ -1,7 +1,11 @@
 name: Image scan (Trivy)
 # Ported from the internal reusable Trivy template; renamed, action pinned to a
-# release SHA (the internal copy used @master — the exact mutable-ref pattern
-# its sibling Semgrep template carried an exclusion to tolerate).
+# release SHA. The internal copy used @master when this was written — the exact
+# mutable-ref pattern its sibling Semgrep template carried an exclusion to
+# tolerate. Both were fixed on 2026-09-09: ctxeco-ci-templates now pins
+# trivy-action to this same v0.36.0 SHA, and the Semgrep exclusion is gone, so
+# an unpinned `uses:` is a red gate there. This file is kept on the same
+# release so the two do not drift apart again.
 on:
   pull_request:
     paths: ["demo/Dockerfile*", "demo/compose*", ".github/workflows/trivy.yml"]
@@ -25,7 +29,7 @@ jobs:
           if [ -f demo/Dockerfile ]; then docker build -t shelfmark-demo:ci -f demo/Dockerfile .; else echo "no demo/Dockerfile yet"; exit 0; fi
       - name: Trivy scan
         if: hashFiles('demo/Dockerfile') != ''
-        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: shelfmark-demo:ci
           format: sarif

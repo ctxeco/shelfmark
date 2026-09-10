@@ -69,12 +69,19 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    container:
-      image: semgrep/semgrep:latest-nonroot
+    # Not a job-level `container:`. This job used to run inside
+    # semgrep/semgrep:latest-nonroot, whose user cannot write the runner's
+    # file-command files under /__w/_temp: actions/checkout died on its first
+    # saveState, upload-sarif on set_env, and the scan itself never ran. JS
+    # actions in a container job are also handed the HOST workspace path as
+    # checkout_path, which is not a git repository inside the container. So
+    # the actions run on the runner, and only the scanner runs in its image.
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - name: Semgrep scan
-        run: semgrep scan --config auto --error --quiet --sarif --output semgrep.sarif .
+        run: >-
+          docker run --rm -v "$GITHUB_WORKSPACE:/src" -w /src semgrep/semgrep
+          semgrep scan --config auto --error --quiet --sarif --output semgrep.sarif .
       - uses: github/codeql-action/upload-sarif@6f5948dfacef28e207b48d0905cf90c03365536d # v3
         if: always()
         with:

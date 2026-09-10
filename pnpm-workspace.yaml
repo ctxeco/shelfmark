@@ -1,3 +1,11 @@
 packages:
   - "packages/*"
   - "demo"
+
+# Supply-chain settings (pnpm >= 10.26). A version must be a week old before
+# it resolves (dependabot's cooldown matches), transitive dependencies may not
+# come from git/tarball URLs, and a package whose publish provenance weakens
+# between versions is refused.
+minimumReleaseAge: 10080
+blockExoticSubdeps: true
+trustPolicy: no-downgrade

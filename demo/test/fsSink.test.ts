@@ -7,6 +7,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { DocumentMeta } from '@shelfmark/core';
+import { extractText } from '../src/sinks/extractText.js';
 import { FsDocumentSink, MANIFEST_FILE, openSearchIndex } from '../src/sinks/fsSink.js';
 
 let dataDir: string;
@@ -204,5 +205,24 @@ describe('FsDocumentSink', () => {
     // '..' segments collapse to '_' — the write landed inside dataDir.
     const escaped = path.join(dataDir, 'ingested', 'demo', 'conn-test', '_', '_', 'etc', '_');
     expect((await readFile(escaped, 'utf8')).toString()).toBe('escape attempt');
+  });
+});
+
+describe('extractText — pdf', () => {
+  // A Buffer can sit anywhere in Node's shared allocation pool, and the
+  // bundled pdf.js parsed a VALID pdf as garbage ("bad XRef entry") whenever
+  // its internal copy landed mid-pool. The single pdf test above therefore
+  // passed or failed on allocation luck — green locally, red in CI. Walking
+  // the pool through 40 positions keeps that regression from hiding behind a
+  // lucky one.
+  it('parses the same valid pdf wherever its bytes sit in the Buffer pool', async () => {
+    for (let shift = 0; shift < 40; shift++) {
+      Buffer.allocUnsafe(((shift * 211) % 3000) + 1); // move the pool cursor
+      const result = await extractText('application/pdf', minimalPdf('Hello shelfmark PDF'));
+      expect(result, `pool shift ${shift}`).toEqual({
+        ok: true,
+        text: expect.stringContaining('Hello shelfmark PDF'),
+      });
+    }
   });
 });

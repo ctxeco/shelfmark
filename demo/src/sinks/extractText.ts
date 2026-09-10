@@ -26,7 +26,15 @@ export type ExtractResult = { ok: true; text: string } | { ok: false; error: str
 export async function extractText(mimetype: string, content: Buffer): Promise<ExtractResult> {
   try {
     if (mimetype === 'application/pdf') {
-      const parsed = await pdfParse(content);
+      // A plain Uint8Array copy, never the Buffer itself. The pdf.js bundled
+      // in pdf-parse clones its input with `new value.constructor(value)` —
+      // for a Buffer, a copy into Node's shared allocation pool, i.e. a view
+      // part-way into a larger ArrayBuffer — then builds sub-streams from
+      // `bytes.buffer`, dropping the byteOffset. Wherever that copy lands
+      // mid-pool a valid PDF parses as garbage ("bad XRef entry"), and where
+      // it lands depends on every allocation before it: green on one machine,
+      // red on the next. A Uint8Array clones onto its own ArrayBuffer.
+      const parsed = await pdfParse(new Uint8Array(content));
       return { ok: true, text: parsed.text };
     }
     if (mimetype === DOCX_MIME) {

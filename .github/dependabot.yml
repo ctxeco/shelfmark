@@ -4,7 +4,13 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+    # Matches pnpm's minimumReleaseAge (pnpm-workspace.yaml): a version
+    # younger than seven days is neither proposed nor installable.
+    cooldown:
+      default-days: 7
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7

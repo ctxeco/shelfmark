@@ -95,7 +95,7 @@ jobs:
         run: >-
           docker run --rm -v "$GITHUB_WORKSPACE:/src" -w /src semgrep/semgrep
           semgrep scan --config auto --error --quiet --sarif --output semgrep.sarif .
-      - uses: github/codeql-action/upload-sarif@6f5948dfacef28e207b48d0905cf90c03365536d # v3
+      - uses: github/codeql-action/upload-sarif@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v3
         if: always()
         with:
           sarif_file: semgrep.sarif

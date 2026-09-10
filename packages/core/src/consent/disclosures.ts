@@ -211,6 +211,10 @@ export interface DisclosureRegistry {
 }
 
 function loadDisclosures(dir: string): readonly ConsentDisclosure[] {
+  // `dir` is VENDORED_CONSENT_DIR or the directory a host hands
+  // createDisclosureRegistry — configuration, never request input — and the
+  // joined segment is a literal.
+  // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
   const manifestPath = join(dir, 'disclosures.manifest.json');
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as ConsentManifest;
 
@@ -234,6 +238,10 @@ function loadDisclosures(dir: string): readonly ConsentDisclosure[] {
     // holds for any shape of relative path and cannot be argued with.
     // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
     const disclosurePath = resolve(dir, entry.file);
+    // This line IS the traversal guard: its resolve(dir) calls are the
+    // containment root the entry is checked against. The suppression above
+    // covers only the line directly beneath it, so this one needs its own.
+    // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
     if (disclosurePath !== resolve(dir) && !disclosurePath.startsWith(resolve(dir) + sep)) {
       throw new Error(
         `Vendored consent manifest declares a disclosure file outside the vendored directory: "${entry.file}".`

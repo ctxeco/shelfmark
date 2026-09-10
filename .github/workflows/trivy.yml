@@ -2,7 +2,7 @@ name: Image scan (Trivy)
 # Ported from the internal reusable Trivy template; renamed, action pinned to a
 # release SHA. The internal copy used @master when this was written — the exact
 # mutable-ref pattern its sibling Semgrep template carried an exclusion to
-# tolerate. Both were fixed on 2026-09-09: ctxeco-ci-templates now pins
+# tolerate. Both were fixed on 2026-09-09: the internal template now pins
 # trivy-action to this same v0.36.0 SHA, and the Semgrep exclusion is gone, so
 # an unpinned `uses:` is a red gate there. This file is kept on the same
 # release so the two do not drift apart again.

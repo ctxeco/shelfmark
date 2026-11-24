@@ -25,7 +25,7 @@
     "@temporalio/client": "^1.11.0",
     "@temporalio/worker": "^1.11.0",
     "fastify": "^5.10.0",
-    "mammoth": "^1.8.0",
+    "mammoth": "^1.12.2",
     "minisearch": "^7.1.0",
     "mongodb": "^7.4.0",
     "pdf-parse": "^1.1.1",

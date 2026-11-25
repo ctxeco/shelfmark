@@ -24,7 +24,7 @@
   "dependencies": {
     "@shelfmark/core": "workspace:*",
     "@shelfmark/graph": "workspace:*",
-    "@temporalio/client": "^1.11.0",
+    "@temporalio/client": "^1.26.0",
     "fastify-plugin": "^5.0.0",
     "jose": "^5.10.0",
     "mongodb": "^7.4.0"

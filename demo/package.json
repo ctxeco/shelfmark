@@ -22,7 +22,7 @@
     "@shelfmark/ui": "workspace:*",
     "@shelfmark/workflows": "workspace:*",
     "@tanstack/react-virtual": "^3.10.0",
-    "@temporalio/client": "^1.11.0",
+    "@temporalio/client": "^1.26.0",
     "@temporalio/worker": "^1.11.0",
     "fastify": "^5.12.3",
     "mammoth": "^1.12.2",
